@@ -67,43 +67,7 @@ const data = [
 
 
 const UserList = () => {
-  // const [users, setUsers] = useState([
-  //   {
-  //     id: 1,
-  //     nome_completo: 'Usuário Pendente 1',
-  //     email: 'pendente1@example.com',
-  //     status: 'pendente',
-  //     cargo: '',
-  //     permissoes: [],
-  //   },
-  //   {
-  //     id: 2,
-  //     nome_completo: 'Usuário Pendente 2',
-  //     email: 'pendente2@example.com',
-  //     status: 'pendente',
-  //     cargo: '',
-  //     permissoes: [],
-  //   },
-  //   {
-  //     id: 3,
-  //     nome_completo: 'Usuário Cadastrado 1',
-  //     email: 'cadastrado1@example.com',
-  //     status: 'cadastrado',
-  //     cargo: 'adm',
-  //     permissoes: ['permissao1', 'permissao2'],
-  //   },
-  //   {
-  //     id: 4,
-  //     nome_completo: 'Usuário Cadastrado 2',
-  //     email: 'cadastrado2@example.com',
-  //     status: 'cadastrado',
-  //     cargo: 'user',
-  //     permissoes: ['permissao3'],
-  //   },
-  // ]);
-
-  // const pendentes = users.filter((user) => user.status === 'pendente');
-  // const cadastrados = users.filter((user) => user.status === 'cadastrado');
+  
 
   return (
     <Card>
