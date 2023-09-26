@@ -5,7 +5,7 @@ import React from 'react'
 export const Table = () => {
   return (
     <>
-    <div className ='flex-col h-auto bg-black'>
+    <div className ='flex-col h-auto mt-10'>
 
         <Grid 
         data={[
@@ -17,6 +17,8 @@ export const Table = () => {
         ]}
         columns={['Criador', 'Arquivo','Nº colunas', 'Nº linhas', 'Setor', 'Visualizar']}
         search={true}
+        sort = {true}
+        autoWidth = {true}
         pagination={{
           limit: 4,
         }}

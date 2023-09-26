@@ -1,4 +1,5 @@
 
+import { ChartBar } from '../components/ChartBar';
 import { ChartDonut } from '../components/ChartDonut';
 import { Navbar } from '../components/Navbar'
 
@@ -13,11 +14,21 @@ export const Home = () => {
     <>
 
 
-      <div className='grid grid-cols-3 gap-4'>
-        <div className='col-span-1'> <Navbar /> </div>
-        <div className='col-span-2'><ChartDonut /> </div>
-        <div className='col-span-3'><Table /> </div>
+      <div className='grid grid-cols-6 gap-4'>
+        <div>
+          <div className='col-span-1'> <Navbar /> </div>
+        </div>
+        <div className='col-span-5 mr-16'>
+        <div className='flex'>
+          <ChartBar title={'Titulo'} categories={'Categoria'} dataChar={undefined} />
+          <ChartDonut /> 
+        
+        </div>
+
+        <div className=''><Table /> </div>
+        </div>
       </div>
+
     </>
   );
 };
