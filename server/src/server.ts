@@ -1,18 +1,14 @@
-import express from "express";
-import cors from "cors";
-import prisma from "prisma";
-const app = express();
+import express from 'express';
+import cors from 'cors';
+import userRoutes from './routes/userRoutes';
 
-app.use(cors());
+const server = express();
 
-// Configura o Prisma
-const db = prisma.connect();
 
-// Rotas da API
-app.get("/users", async (req, res) => {
-  const users = await db.user.findMany();
-  res.json(users);
-});
+server.use(express.json());
+server.use(cors());
 
-// Inicia o servidor
-app.listen(3000, () => console.log("Servidor iniciado na porta 3000"));
+// Rotas
+server.use('/api/usuario', userRoutes);
+
+server.listen(3333, ()=> console.log('Server is running port 3333'))

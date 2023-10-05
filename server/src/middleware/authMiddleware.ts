@@ -12,8 +12,8 @@ export const authenticateUser = (req: Request, res: Response, next: NextFunction
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     // Você pode adicionar informações do usuário ao objeto de solicitação para uso posterior nas rotas protegidas
-    req.user = decoded;
-    
+    req.usuario = decoded;
+
     next();
   } catch (error) {
     return res.status(401).json({ error: 'Token de autenticação inválido' });
