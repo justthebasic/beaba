@@ -1,7 +1,32 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { FormEvent, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import api from '../services/api'
+import { InputForm } from '../components/input/InputForm'
 
 export const Registro = () => {
+  const navigate = useNavigate()
+
+  const [nome_usuario, setNome] = useState('')
+  const [email, setEmail] = useState('')
+  const [senha, setSenha] = useState('')
+
+  const handleCreateUser = (e: FormEvent) => {
+    e.preventDefault()
+
+    api.post('api/users', {
+      nome_usuario,
+      email,
+      senha
+    }).then(() => {
+      alert('Cadastro realizado com sucesso')
+
+      navigate('/login')
+    }).catch(() => {
+      alert('Erro no cadastro!')
+    })
+  }
+
+
   return (
     <>
       <main className="bg-white font-sans h-screen">
@@ -30,52 +55,35 @@ export const Registro = () => {
                 Bem-vindo a <span className="text-green-600">Quero-Quero</span>
               </h1>
 
-              <form className="flex flex-col pt-3 md:pt-8">
-                <div className="flex flex-col pt-4">
-                  <label htmlFor="text" className="text-lg">
-                    Nome Completo
-                  </label>
-                  <input
-                    type="text"
-                    name="name"
-                    id="name"
-                    placeholder="Digite seu nome completo..."
-                    className="shadow appearance-none border rounded w-full py-2 px-3 
-                                        text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline"
-                  />
-                </div>
-                
-                <div className="flex flex-col pt-4">
-                  <label htmlFor="email" className="text-lg">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    id="email"
-                    placeholder="Digite seu email..."
-                    className="shadow appearance-none border rounded w-full py-2 px-3 
-                                        text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline"
-                  />
-                </div>
+              <form onSubmit={handleCreateUser} className="flex flex-col pt-3 md:pt-8">
 
-                <div className="flex flex-col pt-4">
-                  <label htmlFor="password" className="text-lg">
-                    Senha
-                  </label>
-                  <input
-                    type="password"
-                    id="password"
-                    placeholder="Digite sua senha..."
-                    className="shadow appearance-none border rounded w-full py-2 px-3 
-                                        text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline "
-                  />
-                </div>
-
-                <input
-                  type="submit"
-                  className="bg-green-600 text-white font-bold text-lg hover:bg-green-700 p-2 mt-4"
+                <InputForm
+                  name={'name'}
+                  label={'Nome Completo'}
+                  value={nome_usuario}
+                  placeholder='Digite seu nome...'
+                  onChange={(e) => { setNome(e.target.value) }}
                 />
+                <InputForm
+                  name={'email'}
+                  label={'Email'}
+                  value={email}
+                  placeholder='Digite seu email...'
+                  onChange={(e) => { setEmail(e.target.value) }}
+                />
+                <InputForm
+                  name={'senha'}
+                  label={'Senha'}
+                  value={senha}
+                  placeholder='Digite sua senha...'
+                  onChange={(e) => { setSenha(e.target.value) }}
+                />
+
+
+                <button type="submit" className="bg-green-600 text-white font-bold text-lg hover:bg-green-700 p-2 mt-4">
+                    Cadastrar
+                </button>
+
               </form>
 
               <div className="text-center pt-12 pb-12">

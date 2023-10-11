@@ -12,7 +12,7 @@ export const Navbar = () => {
 
     return (
         <>
-            <div className="flex flex-wrap bg-white h-screen">
+            <div className="flex flex-wrap bg-white h-full">
                 <div className="w-60 bg-green-600 rounded p-3 shadow-lg flex-col justify-center">
                     <div className='w-full mb-6 text-center items-center justify-center'>
                         <Link to={'/'}>
@@ -21,7 +21,7 @@ export const Navbar = () => {
                         </Link>
                     </div>
                     <div className="flex items-center space-x-4 p-2 mb-5">
-                        <img className="h-10 rounded-full" src="http://www.gravatar.com/avatar/2acfb745ecf9d4dccb3364752d17f65f?s=260&d=mp" alt="{user}" />
+                        <img className="h-10 rounded-full" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSngDLxVdX-4fhpWyG8hDPxUWyGV1B9uOXJ3Q&usqp=CAU" alt="avatar" />
                         <div className='flex'>
                             <h4 className="font-semibold text-xl text-white capitalize font-poppins tracking-wide pr-6">Erick</h4>
                             <span className="text-gray-600">

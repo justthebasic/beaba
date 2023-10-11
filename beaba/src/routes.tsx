@@ -1,6 +1,5 @@
 import {BrowserRouter, Route, Routes} from 'react-router-dom'
 import { Login } from './pages/Login'
-import { Home } from './pages/Home'
 import { Registro } from './pages/Registro'
 import { AprovarTemplate } from './pages/AprovarTemplate'
 import { Arquivos } from './pages/Arquivos'
@@ -11,11 +10,11 @@ import { Upload } from './pages/Upload'
 import { Usuarios } from './pages/Usuarios'
 
 
-export const Layout = () => {
+export const Rotas = () => {
   return (
     <BrowserRouter>
         <Routes>
-            <Route path='/' element={<Home/>}/>
+            <Route path='/' element={<Dashboard/>}/>
             <Route path='/Login' element={<Login/>}/>
             <Route path='/Registro' element={<Registro/>}/>
             <Route path='/Usuarios' element={<Usuarios/>}/>

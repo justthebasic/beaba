@@ -2,29 +2,18 @@ import { Card, Title, DonutChart } from "@tremor/react";
 
 const Pessoas = [
   {
-    name: "Matheus",
+    name: "XLSX",
     Uploads: 9800,
   },
   {
-    name: "Lucas",
+    name: "XLS",
     Uploads: 4567,
   },
   {
-    name: "José",
+    name: "CSV",
     Uploads: 3908,
   },
-  {
-    name: "Pedro",
-    Uploads: 2400,
-  },
-  {
-    name: "Ricardo",
-    Uploads: 1908,
-  },
-  {
-    name: "Fred",
-    Uploads: 1398,
-  },
+  
 ];
 
 
@@ -40,8 +29,7 @@ export const ChartDonut = () => {
           data={Pessoas}
           category="Uploads"
           index="name"
-          valueFormatter={String}
-          colors={["slate", "violet", "indigo", "rose", "cyan", "amber"]}
+          colors={["slate", "violet", "indigo",]}
         />
       </Card>
     </>

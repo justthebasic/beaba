@@ -11,35 +11,32 @@ model arquivo {
   id              Int      @id @default(autoincrement())
   nome_arquivo    String   @db.VarChar(45)
   caminho_arquivo String   @db.VarChar(255)
-  data_envio      DateTime @db.Timestamp(6)
+  data_envio      DateTime @default(now()) @db.Timestamp(6)
   estado          Boolean
-  usuario_id      Int
-  template_id     Int
   template        template @relation(fields: [template_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   usuario         usuario  @relation(fields: [usuario_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  usuario_id      Int
+  template_id     Int
 }
 
 model campo {
-  id                                   Int        @id @default(autoincrement())
-  nome_campo                           String     @db.VarChar(45)
-  tipo                                 String     @db.VarChar(45)
-  template_id                          Int
-  template_campo_template_idTotemplate template   @relation("campo_template_idTotemplate", fields: [template_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  template_template_campo_idTocampo    template[] @relation("template_campo_idTocampo")
+  id          Int      @id @default(autoincrement())
+  nome_campo  String   @db.VarChar(45)
+  tipo        String   @db.VarChar(45)
+  templates   template @relation(fields: [template_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  template_id Int
 }
 
 model template {
-  id                                Int       @id @default(autoincrement())
-  nome_template                     String    @db.VarChar(45)
-  formato                           String    @db.VarChar(45)
-  data_criacao                      DateTime  @db.Timestamp(6)
-  estado                            status?   @default(pendente)
-  usuario_id                        Int
-  campo_id                          Int
-  arquivo                           arquivo[]
-  campo_campo_template_idTotemplate campo[]   @relation("campo_template_idTotemplate")
-  campo_template_campo_idTocampo    campo     @relation("template_campo_idTocampo", fields: [campo_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  usuario                           usuario   @relation(fields: [usuario_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id            Int       @id @default(autoincrement())
+  nome_template String    @db.VarChar(45)
+  formato       String    @db.VarChar(45)
+  data_criacao  DateTime  @default(now()) @db.Timestamp(6)
+  estado        status?   @default(pendente)
+  arquivo       arquivo[]
+  campos        campo[]
+  usuario       usuario   @relation(fields: [usuario_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  usuario_id    Int
 }
 
 model usuario {

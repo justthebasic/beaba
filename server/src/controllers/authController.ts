@@ -1,26 +1,79 @@
-// src/controllers/authController.ts
+// authController.ts
+import { Request, Response } from "express";
+import jwt from "jsonwebtoken";
+import { prisma } from "../database";
 
-import { Request, Response } from 'express';
-import jwt from 'jsonwebtoken';
+export default class AuthController {
 
-// Função para registrar um novo usuário (simulação)
-export const registerUser = (req: Request, res: Response) => {
-  // Lógica para criar um novo usuário no banco de dados
-  // ...
+  static async registerUser(req: Request, res: Response) {
+    try {
+      const { nome_usuario, email, senha } = req.body;
 
-  // Gere um token JWT para o novo usuário
-  const token = jwt.sign({ userId: 1 }, process.env.JWT_SECRET, { expiresIn: '1h' });
+      if (!nome_usuario || !email || !senha) {
+        return res.status(400).json({ error: "Todos os campos são obrigatórios" });
+      }
 
-  res.json({ token });
-};
+      // Verifique se o usuário já existe com o mesmo email
+      const existingUser = await prisma.usuario.findUnique({
+        where: { email },
+      });
 
-// Função para fazer login de usuário (simulação)
-export const loginUser = (req: Request, res: Response) => {
-  // Lógica para verificar as credenciais do usuário
-  // ...
+      if (existingUser) {
+        return res.status(400).json({ error: "O email já está em uso" });
+      }
 
-  // Se as credenciais estiverem corretas, gere um token JWT
-  const token = jwt.sign({ userId: 1 }, process.env.JWT_SECRET, { expiresIn: '1h' });
+      // Crie um novo usuário
+      const newUser = await prisma.usuario.create({
+        data: {
+          nome_usuario,
+          email,
+          senha, // Lembre-se de criptografar a senha com bcrypt antes de armazená-la no banco de dados em produção
+        },
+      });
 
-  res.json({ token });
-};
+      // Gere um token JWT para o novo usuário
+      const token = jwt.sign({ userId: newUser.id }, "seuSegredoJWT", {
+        expiresIn: "1h",
+      });
+
+      // Envie o token para o cliente
+      res.json({ token });
+    } catch (error) {
+      res.status(500).json({ error: "Erro no registro" });
+    }
+  }
+
+  static async loginUser(req: Request, res: Response) {
+    try {
+      const { email, senha } = req.body;
+
+      if (!email || !senha) {
+        return res.status(400).json({ error: "Email e senha são obrigatórios" });
+      }
+
+      // Verifique as credenciais no banco de dados
+      const user = await prisma.usuario.findUnique({
+        where: { email },
+      });
+
+      if (!user) {
+        return res.status(401).json({ error: "Credenciais inválidas" });
+      }
+
+      if (user.senha !== senha) {
+        return res.status(401).json({ error: "Credenciais inválidas" });
+      }
+
+      // Gere um token JWT
+      const token = jwt.sign({ userId: user.id }, "seuSegredoJWT", {
+        expiresIn: "1h", // Define a expiração do token
+      });
+
+      // Envie o token para o cliente
+      res.json({ token });
+    } catch (error) {
+      res.status(500).json({ error: "Erro no login" });
+    }
+  }
+}
+

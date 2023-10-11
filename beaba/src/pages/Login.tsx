@@ -1,7 +1,29 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import { FormEvent, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import api from '../services/api'
+import { InputForm } from '../components/input/InputForm'
 
 export const Login = () => {
+  const navigate = useNavigate()
+
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
+
+  const handleLogin = (e: FormEvent) => {
+    e.preventDefault();
+
+    api.post('api/login', {
+      email,
+      senha
+    }).then(() => {
+      alert('Login realizado com sucesso')
+      navigate('/')
+    }).catch(() => {
+      alert('Erro no login! Verifique suas credenciais.')
+    })
+  }
+
+
   return (
     <>
       <main className="bg-white font-sans h-screen">
@@ -9,7 +31,7 @@ export const Login = () => {
           <div className="w-1/2 shadow-2xl">
             <img
               className="object-cover w-full h-screen hidden md:block"
-              src=""
+              src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.svg"
               alt="Logo"
             />
           </div>
@@ -30,39 +52,27 @@ export const Login = () => {
                 Bem-vindo a <span className="text-green-600">Quero-Quero</span>
               </h1>
 
-              <form className="flex flex-col pt-3 md:pt-8">
+              <form onSubmit={handleLogin} className="flex flex-col pt-3 md:pt-8">
 
-                <div className="flex flex-col pt-4">
-                  <label htmlFor="email" className="text-lg">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    id="email"
-                    placeholder="Digite seu email..."
-                    className="shadow appearance-none border rounded w-full py-2 px-3 
-                                       text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline"
-                  />
-                </div>
-
-                <div className="flex flex-col pt-4">
-                  <label htmlFor="password" className="text-lg">
-                    Senha
-                  </label>
-                  <input
-                    type="password"
-                    id="password"
-                    placeholder="Digite sua senha..."
-                    className="shadow appearance-none border rounded w-full py-2 px-3 
-                                        text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline "
-                  />
-                </div>
-
-                <input
-                  type="submit"
-                  className=" bg-green-600 text-white font-bold text-lg hover:bg-green-700 p-2 mt-4 "
+              <InputForm
+                  name={'email'}
+                  label={'Email'}
+                  value={email}
+                  placeholder='Digite seu email...'
+                  onChange={(e) => { setEmail(e.target.value) }}
                 />
+                <InputForm
+                  name={'senha'}
+                  label={'Senha'}
+                  value={senha}
+                  placeholder='Digite sua senha...'
+                  onChange={(e) => { setSenha(e.target.value) }}
+                />
+
+                <button type="submit" className=" bg-green-600 text-white font-bold text-lg hover:bg-green-700 p-2 mt-4 ">
+                    Entrar
+                </button>
+                
               </form>
 
               <div className="text-center pt-12 pb-12">

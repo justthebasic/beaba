@@ -1,15 +1,18 @@
 import React from 'react'
 import { Navbar } from '../components/Navbar'
-import { Input } from '../components/Input'
+import { Input } from '../components/input/Input'
 
 export const Upload = () => {
     return (
         <>
-            <div className='grid grid-cols-6'>
-                <div className='col-span-1'>
+            <div className='flex h-screen font-sans'>
+                <div className=''>
                     <Navbar />
                 </div>
-                <div className='col-span-2 w-full mx-auto '>
+                <div className=' w-1/2 mx-auto '>
+                    <div className='text-2xl m-16 text-center'>
+                        <h1>Upload</h1>
+                    </div>
                     <div className='flex my-10'>
                         <h1 className='p-2'>Template:</h1>
                         <select id="template" className=" border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-2/4 h-1/4 p-2.5 dark:bg-gray-200  dark:placeholder-gray-400 text-black dark:focus:ring-blue-500 dark:focus:border-blue-500">
@@ -31,12 +34,12 @@ export const Upload = () => {
                             <button>Arquivo</button>
                         </div>
                     </div>
-                </div>
-                    <div className='my-auto '>
-                        <div className='rounded p-6 text-center mt-10 flex justify-center items-center bg-green-500 text-white font-bold text-lg'>
-                            <button>Enviar Arquivo</button>
-                        </div>
+                <div className='m-auto text-center justify-center flex '>
+                    <div className='rounded p-6 text-center mt-10 flex justify-center items-center bg-green-500 text-white font-bold text-lg hover:bg-green-600'>
+                        <button>Enviar Arquivo</button>
                     </div>
+                </div>
+                </div>
             </div>
         </>
     )
