@@ -1,10 +1,8 @@
 import { Grid, _ } from 'gridjs-react'
 import "gridjs/dist/theme/mermaid.css";
-import React from 'react'
+
 
 export const Table = () => {
-
-
 
   return (
     <>

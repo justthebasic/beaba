@@ -1,4 +1,3 @@
-
 import { Link, useLocation } from 'react-router-dom'
 import { DropDown } from './DropDown';
 
@@ -15,7 +14,7 @@ export const Navbar = () => {
             <div className="flex flex-wrap bg-white h-full">
                 <div className="w-60 bg-green-600 rounded p-3 shadow-lg flex-col justify-center">
                     <div className='w-full mb-6 text-center items-center justify-center'>
-                        <Link to={'/'}>
+                        <Link to={'/dashboard'}>
 
                             <img src="http://qqtechs.com.br/qqtech/pluginfile.php/1/core_admin/logo/0x200/1657896100/Lojas%20Quero%20Quero.jpg" alt="" />
                         </Link>
@@ -33,27 +32,27 @@ export const Navbar = () => {
                     </div>
                     <ul className="space-y-2 text-lg">
                         <li>
-                            <Link to={"/usuarios"}
-                                className={`flex items-center space-x-3 text-white p-2 rounded-md font-medium hover:bg-green-500 focus:bg-green-500 focus:shadow-outline 
-                            ${location.pathname === '/usuarios' ? 'bg-green-500' : ''}`}>
-                                <span className="text-gray-600">
-                                    <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        {/* <!-- Adicione o ícone apropriado aqui --> */}
-                                    </svg>
-                                </span>
-                                <span>Usuários</span>
-                            </Link>
-                        </li>
-                        <li>
                             <Link to={"/dashboard"}
                                 className={`flex items-center space-x-3 text-white p-2 rounded-md font-medium hover:bg-green-500 focus:bg-green-500 focus:shadow-outline 
-                            ${location.pathname === '/' ? 'bg-green-500' : ''}`}>
+                                ${location.pathname === '/dashboard' ? 'bg-green-500' : ''}`}>
                                 <span className="text-gray-600">
                                     <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         {/* <!-- Adicione o ícone apropriado aqui --> */}
                                     </svg>
                                 </span>
                                 <span>Dashboard</span>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to={"/usuarios"}
+                                className={`flex items-center space-x-3 text-white p-2 rounded-md font-medium hover:bg-green-500 focus:bg-green-500 focus:shadow-outline 
+                                    ${location.pathname === '/usuarios' ? 'bg-green-500' : ''}`}>
+                                <span className="text-gray-600">
+                                    <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        {/* <!-- Adicione o ícone apropriado aqui --> */}
+                                    </svg>
+                                </span>
+                                <span>Usuários</span>
                             </Link>
                         </li>
                         <li>
@@ -67,7 +66,7 @@ export const Navbar = () => {
                                     </svg>
                                 </span>
                                 <span><DropDown /></span>
-                            
+
                             </Link>
 
                         </li>
@@ -106,7 +105,7 @@ export const Navbar = () => {
                                             {/* <!-- Adicione o ícone apropriado aqui --> */}
                                         </svg>
                                     </span>
-                                    <span>Logout</span>
+                                    <span>Sair</span>
                                 </Link>
                             </li>
                         </div>

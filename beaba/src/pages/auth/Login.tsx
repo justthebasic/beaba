@@ -1,30 +1,33 @@
-import React, { FormEvent, useState } from 'react'
+import { FormEvent, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import api from '../services/api'
-import { InputForm } from '../components/input/InputForm'
+import api from '../../services/api'
+import { InputForm } from '../../components/input/InputForm'
+import { useBearStore } from '../../state/state'
 
-export const Registro = () => {
+export const Login = () => {
   const navigate = useNavigate()
 
-  const [nome_usuario, setNome] = useState('')
-  const [email, setEmail] = useState('')
-  const [senha, setSenha] = useState('')
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
 
-  const handleCreateUser = (e: FormEvent) => {
-    e.preventDefault()
+  const setIsUserValid =  useBearStore((state) => state.setUserValid)
 
-    api.post('api/users', {
-      nome_usuario,
+  const handleLogin = (e: FormEvent) => {
+    e.preventDefault();
+
+    api.post('api/login', {
       email,
       senha
     }).then(() => {
-      alert('Cadastro realizado com sucesso')
-
-      navigate('/login')
+      setIsUserValid(true)
+      alert('Login realizado com sucesso')
+      navigate('/dashboard')
     }).catch(() => {
-      alert('Erro no cadastro!')
+      alert('Erro no login! Verifique suas credenciais.')
     })
   }
+
+  
 
 
   return (
@@ -43,7 +46,7 @@ export const Registro = () => {
               <Link className=" text-black font-bold text-xl p-4 shadow-inner rounded-2xl" to={"/login"}>
                 <span className="sr-only">Quero-Quero</span>
                 <img
-                  className="h-10 w-auto"
+                  className="h-10 w-auto "
                   src="https://play-lh.googleusercontent.com/rSNCMDzNW9Oe9e0FpII28GMDrWtM2LZZbKBjppDoFuYjMEbR7UK99ISVMhEnwFm9ZgJm"
                   alt="logo"
                 />
@@ -55,17 +58,11 @@ export const Registro = () => {
                 Bem-vindo a <span className="text-green-600">Quero-Quero</span>
               </h1>
 
-              <form onSubmit={handleCreateUser} className="flex flex-col pt-3 md:pt-8">
+              <form onSubmit={handleLogin} className="flex flex-col pt-3 md:pt-8">
 
-                <InputForm
-                  name={'name'}
-                  label={'Nome Completo'}
-                  value={nome_usuario}
-                  placeholder='Digite seu nome...'
-                  onChange={(e) => { setNome(e.target.value) }}
-                />
-                <InputForm
+              <InputForm
                   name={'email'}
+                  type='email'
                   label={'Email'}
                   value={email}
                   placeholder='Digite seu email...'
@@ -73,24 +70,24 @@ export const Registro = () => {
                 />
                 <InputForm
                   name={'senha'}
+                  type='password'
                   label={'Senha'}
                   value={senha}
                   placeholder='Digite sua senha...'
                   onChange={(e) => { setSenha(e.target.value) }}
                 />
 
-
-                <button type="submit" className="bg-green-600 text-white font-bold text-lg hover:bg-green-700 p-2 mt-4">
-                    Cadastrar
+                <button type="submit" className=" bg-green-600 text-white font-bold text-lg hover:bg-green-700 p-2 mt-4 ">
+                    Entrar
                 </button>
-
+                
               </form>
 
               <div className="text-center pt-12 pb-12">
                 <p>
                   Já tem uma conta?{" "}
-                  <Link className=" font-semibold" to={"/login"}>
-                    <span className='text-green-600'>Login</span>
+                  <Link className=" font-semibold" to={"/registro"}>
+                    <span className='text-green-600'>Cadastrar</span>
                   </Link>
                 </p>
               </div>
@@ -98,7 +95,6 @@ export const Registro = () => {
           </div>
         </div>
       </main>
-
     </>
   )
 }

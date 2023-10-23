@@ -1,89 +1,186 @@
-import React from 'react'
+// import { useState } from 'react'
+import { useForm, FormProvider, useFieldArray } from 'react-hook-form'
+import { Form } from '../components/form'
+import api from '../services/api'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { Navbar } from '../components/Navbar'
-import { Input } from '../components/input/Input'
-import { InputRadio } from '../components/input/InputRadio'
+
+const createTemplateSchema = z.object({
+  nome_template: z.string().nonempty({
+    message: 'O nome é obrigatório',
+  }),
+  formato: z.string().nonempty({
+    message: 'O formato é obrigatório',
+  }),
+  campos: z.array(
+    z.object({
+      nome_campo: z.string().nonempty({
+        message: 'O nome do campo é obrigatório',
+      }),
+      tipo: z.string().nonempty({
+        message: 'O tipo do campo é obrigatório',
+      }),
+    })
+  ),
+});
+
+type CreateTemplateData = z.infer<typeof createTemplateSchema>;
 
 export const CadastroTemplate = () => {
+  // const [output, setOutput] = useState('');
+
+  const createTemplateForm = useForm<CreateTemplateData>({
+    resolver: zodResolver(createTemplateSchema),
+  });
+
+  async function createTemplate(data: CreateTemplateData) {
+    const userId = 72
+    try {
+      const response = await api.post('api/templates', {
+        nome_template: data.nome_template,
+        formato: data.formato,
+        campos: data.campos,
+        id: userId,
+      });
+
+      if (response.status === 200) {
+        alert('Cadastro realizado com sucesso');
+      } else {
+        alert('Erro no cadastro. Verifique os dados e tente novamente.');
+      }
+    } catch (error) {
+      console.error(error);
+      alert('Erro no cadastro. Verifique os dados e tente novamente.');
+    }
+  }
+
+  const {
+    handleSubmit,
+    control,
+  } = createTemplateForm;
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'campos',
+  });
+
+  function addNewField() {
+    append({ nome_campo: '', tipo: '' });
+  }
+
   return (
-    <>
-      <div className='flex'>
-        <div>
-
-          <Navbar />
-        </div>
-        <div className=' text-center m-10 w-screen h-screen justify-center items-center '>
-          <div className='space-y-10'>
-
-          <div className='text-center text-2xl'>
-            <h1>Cadastro Templates</h1>
-          </div>
-          <div className='flex'>
-            <h1 className='p-2'>Nome:</h1>
-            <Input />
-          </div>
-          <div className='flex'>
-            <h1 className='p-2'>Setor:</h1>
-            <select id="setor" className=" border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-1/4 h-1/4 p-2.5 dark:bg-gray-200  dark:placeholder-gray-400 text-black dark:focus:ring-blue-500 dark:focus:border-blue-500">
-              <option selected>Setor</option>
-              <option value="US">Setor1</option>
-              <option value="CA">Setor2</option>
-              <option value="FR">Setor3</option>
-              <option value="DE">Setor4</option>
-            </select>
-
-          </div>
-          </div>
-          <div className='flex my-10'>
-            <h1 className='p-2'>Formatos de arquivo:</h1>
-            <InputRadio />
-          </div>
-          <div className='flex my-10 w-full '>
-            <h1 className='p-2 w-1/4'>Nome das colunas:</h1>
-            <div className='w-full '>
-              <div className='mb-2'>
-                <Input />
-                <span>
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                  </svg>
-                </span>
-              </div>
-              <div>
-
-                <Input />
-                <span className='flex'>
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </span>
-              </div>
-
-            </div>
-            <h1 className='p-2 w-1/4'>Tipo colunas:</h1>
-            <div className='w-full '>
-              <div className='mb-2 '>
-                <Input />
-                <span>
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                  </svg>
-                </span>
-              </div>
-              <div>
-                <Input />
-                <span>
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </span>
-              </div>
-            </div>
-          </div>
-              <div className='w-1/4 h-16 mx-auto my-10 rounded p-6 text-center mt-10 flex justify-center items-center bg-green-500 text-white font-bold hover:bg-green-600 text-lg'>
-                <button>Cadastrar</button>
-              </div>
-        </div>
+    <div className='flex'>
+      <div>
+        <Navbar/>
       </div>
-    </>
-  )
-}
+
+      <FormProvider {...createTemplateForm}>
+        <form onSubmit={handleSubmit(createTemplate)}>
+          <div className='text-center m-10 w-screen h-screen justify-center'>
+            <div className='space-y-10'>
+              <div className='text-center text-2xl'>
+                <h1>Cadastro templates</h1>
+              </div>
+              <Form.Field className='flex gap-2 w-1/3'>
+                <Form.Label htmlFor="nome_template">
+                  Nome do Template
+                </Form.Label>
+                <Form.Input type="text" name="nome_template" />
+                <Form.ErrorMessage field="nome_template" />
+              </Form.Field>
+            </div>
+
+            <div className='flex my-10 gap-6'>
+              <h1 className=''>Formatos de arquivo:</h1>
+              <Form.Field>
+                <Form.Label>
+                  CSV
+                  <Form.Input
+                    type="radio"
+                    name="formato"
+                    value="CSV"
+                  />
+                </Form.Label>
+              </Form.Field>
+              <Form.Field>
+                <Form.Label>
+                  XLS
+                  <Form.Input
+                    type="radio"
+                    name="formato"
+                    value="XLS"
+                  />
+                </Form.Label>
+              </Form.Field>
+              <Form.Field>
+                <Form.Label>
+                  XLSX
+                  <Form.Input
+                    type="radio"
+                    name="formato"
+                    value="XLSX"
+                  />
+                </Form.Label>
+              </Form.Field>
+            </div>
+
+            <div className='flex'>
+              <h1>Campos:</h1>
+              <Form.Field>
+                <Form.Label className=' w-28 h-20  '>
+                  
+                  <button
+                    type="button"
+                    onClick={addNewField}
+                    className=' inline-flex text-white bg-blue-500 border-0 m-6 py-2 px-6 focus:outline-none hover:bg-blue-600 rounded text-lg'
+                  >
+                    Add
+                  </button>
+                </Form.Label>
+                {fields.map((field, index) => {
+                  return (
+                    <div className='m-4 w-1/3 flex gap-4 ' key={field.id}>
+                      <Form.Field >
+                        <Form.Label htmlFor={`campos[${index}].nome_campo`}>
+                          Nome do Campo
+                        </Form.Label>
+                        <Form.Input
+                          type="text"
+                          name={`campos[${index}].nome_campo`}
+                        />
+                        <Form.ErrorMessage field={`campos[${index}].nome_campo`} />
+                      </Form.Field>
+                      <Form.Field>
+                        <Form.Label htmlFor={`campos[${index}].tipo`}>
+                          Tipo do Campo
+                        </Form.Label>
+                        <Form.Input
+                          type="text"
+                          name={`campos[${index}].tipo`}
+                        />
+                        <Form.ErrorMessage field={`campos[${index}].tipo`} />
+                      </Form.Field>
+                      <button
+                        type="button"
+                        onClick={() => remove(index)}
+                        className='inline-flex text-white bg-red-500 border-0 m-6 py-2 px-6 focus:outline-none hover:bg-red-600 rounded text-lg'
+                      >
+                        Remover
+                      </button>
+                    </div>
+                  );
+                })}
+              </Form.Field>
+            </div>
+
+            
+            <button type='submit' className="flex justify-center items-center text-white bg-green-500 border-0 py-2 px-6 focus:outline-none hover:bg-green-600 rounded text-lg">
+                Cadastrar
+            </button>
+          </div>
+        </form>
+      </FormProvider>
+    </div>
+  );
+};

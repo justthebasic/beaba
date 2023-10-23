@@ -3,7 +3,7 @@ import {
   Card,
   Grid,
   Title,
-  
+
   Tab,
   TabList,
   TabGroup,
@@ -12,9 +12,9 @@ import {
 
 } from "@tremor/react";
 // import { ChartDonut } from '../components/ChartDonut';
-import {  ChartBarMaiorUploads, ChartBarRanking, ChartBarUploads } from '../components/chart/ChartBar';
+import { ChartBarMaiorUploads, ChartBarRanking, ChartBarUploads } from '../components/chart/ChartBar';
 import { ChartDonut } from '../components/chart/ChartDonut';
-import { Table } from "../components/table/Table"
+import { Table } from "../components/table/Table";
 
 
 
@@ -89,36 +89,33 @@ export const Dashboard = () => {
                   <Card>
                     <Title>Templates Cadastrados</Title>
 
-
-                    {/* Placeholder to set height */}
                     <div className="h-28 " />
                   </Card>
                   <Card>
                     <Title>Maior Quantia de uploads</Title>
-                    {/* Placeholder to set height */}
+
                     <div className="h-28" />
                   </Card>
                   <Card>
                     <Title>Ranking Formatos</Title>
-                    {/* Placeholder to set height */}
+
                     <div className="h-28" />
                   </Card>
                 </Grid>
                 <Grid numItemsMd={2} numItemsLg={3} className="gap-6 mt-6">
                   <Card>
 
-                    {/* Placeholder to set height */}
-                    <ChartBarUploads  />
+                    <ChartBarUploads />
                     <div className="h-30" />
                   </Card>
                   <Card>
-                    <ChartBarMaiorUploads  />
-                    {/* Placeholder to set height */}
+                    <ChartBarMaiorUploads />
+
                     <div className="h-30" />
                   </Card>
                   <Card>
                     <ChartBarRanking />
-                    {/* Placeholder to set height */}
+
                     <div className="h-30" />
                   </Card>
                 </Grid>
@@ -131,7 +128,7 @@ export const Dashboard = () => {
                   <Card>
                     <div>
                       <div className='flex items-center'>
-                        <ChartBarUploads/>
+                        <ChartBarUploads />
                         <ChartDonut />
                       </div>
                       <div className=''>

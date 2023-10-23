@@ -15,7 +15,10 @@ export default class TemplateController {
     }
 
     static async createTemplate(req: Request, res: Response) {
-        const { nome_template, formato, campos } = req.body;
+        const { nome_template, formato, campos, id } = req.body;
+
+        const userId = id
+       
 
         if (!nome_template || !formato || !campos || campos.length === 0) {
             return res.status(400).json({ error: "Nome do template, formato e pelo menos um campo são obrigatórios" });
@@ -24,7 +27,6 @@ export default class TemplateController {
         try {
             // Obter a data e hora atual
             const data_criacao = new Date();
-
             // Iniciar uma transação
             await prisma.$transaction(async (prisma) => {
                 // Criar o template com a data de criação definida
@@ -33,7 +35,7 @@ export default class TemplateController {
                         nome_template,
                         formato,
                         data_criacao,
-                        usuario: { connect: { id: 1 } }, // Substitua com o ID do usuário associado
+                        usuario: { connect: { id: userId } }, // Substitua com o ID do usuário associado
                         campos: {
                             create: campos.map((campoData) => ({
                                 nome_campo: campoData.nome_campo,

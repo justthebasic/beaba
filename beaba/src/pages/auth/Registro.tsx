@@ -1,25 +1,28 @@
-import { FormEvent, useState } from 'react'
+import React, { FormEvent, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import api from '../services/api'
-import { InputForm } from '../components/input/InputForm'
+import api from '../../services/api'
+import { InputForm } from '../../components/input/InputForm'
 
-export const Login = () => {
+export const Registro = () => {
   const navigate = useNavigate()
 
-  const [email, setEmail] = useState('');
-  const [senha, setSenha] = useState('');
+  const [nome_usuario, setNome] = useState('')
+  const [email, setEmail] = useState('')
+  const [senha, setSenha] = useState('')
 
-  const handleLogin = (e: FormEvent) => {
-    e.preventDefault();
+  const handleCreateUser = (e: FormEvent) => {
+    e.preventDefault()
 
-    api.post('api/login', {
+    api.post('api/users', {
+      nome_usuario,
       email,
       senha
     }).then(() => {
-      alert('Login realizado com sucesso')
-      navigate('/')
+      alert('Cadastro realizado com sucesso')
+
+      navigate('/login')
     }).catch(() => {
-      alert('Erro no login! Verifique suas credenciais.')
+      alert('Erro no cadastro!')
     })
   }
 
@@ -40,7 +43,7 @@ export const Login = () => {
               <Link className=" text-black font-bold text-xl p-4 shadow-inner rounded-2xl" to={"/login"}>
                 <span className="sr-only">Quero-Quero</span>
                 <img
-                  className="h-10 w-auto "
+                  className="h-10 w-auto"
                   src="https://play-lh.googleusercontent.com/rSNCMDzNW9Oe9e0FpII28GMDrWtM2LZZbKBjppDoFuYjMEbR7UK99ISVMhEnwFm9ZgJm"
                   alt="logo"
                 />
@@ -52,10 +55,18 @@ export const Login = () => {
                 Bem-vindo a <span className="text-green-600">Quero-Quero</span>
               </h1>
 
-              <form onSubmit={handleLogin} className="flex flex-col pt-3 md:pt-8">
+              <form onSubmit={handleCreateUser} className="flex flex-col pt-3 md:pt-8">
 
-              <InputForm
+                <InputForm
+                  name={'name'}
+                  label={'Nome Completo'}
+                  value={nome_usuario}
+                  placeholder='Digite seu nome...'
+                  onChange={(e) => { setNome(e.target.value) }}
+                />
+                <InputForm
                   name={'email'}
+                  type='email'
                   label={'Email'}
                   value={email}
                   placeholder='Digite seu email...'
@@ -63,23 +74,25 @@ export const Login = () => {
                 />
                 <InputForm
                   name={'senha'}
+                  type='password'
                   label={'Senha'}
                   value={senha}
                   placeholder='Digite sua senha...'
                   onChange={(e) => { setSenha(e.target.value) }}
                 />
 
-                <button type="submit" className=" bg-green-600 text-white font-bold text-lg hover:bg-green-700 p-2 mt-4 ">
-                    Entrar
+
+                <button type="submit" className="bg-green-600 text-white font-bold text-lg hover:bg-green-700 p-2 mt-4">
+                    Cadastrar
                 </button>
-                
+
               </form>
 
               <div className="text-center pt-12 pb-12">
                 <p>
                   Já tem uma conta?{" "}
-                  <Link className=" font-semibold" to={"/registro"}>
-                    <span className='text-green-600'>Cadastrar</span>
+                  <Link className=" font-semibold" to={"/login"}>
+                    <span className='text-green-600'>Login</span>
                   </Link>
                 </p>
               </div>
@@ -87,6 +100,7 @@ export const Login = () => {
           </div>
         </div>
       </main>
+
     </>
   )
 }

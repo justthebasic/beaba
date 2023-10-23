@@ -2,6 +2,8 @@
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { prisma } from "../database";
+import * as bcrypt from "bcrypt"
+
 
 export default class AuthController {
 
@@ -17,17 +19,18 @@ export default class AuthController {
       const existingUser = await prisma.usuario.findUnique({
         where: { email },
       });
-
       if (existingUser) {
         return res.status(400).json({ error: "O email já está em uso" });
       }
+      
+      // const hashedPassword = await bcrypt.hash(senha, 10);
 
       // Crie um novo usuário
       const newUser = await prisma.usuario.create({
         data: {
           nome_usuario,
           email,
-          senha, // Lembre-se de criptografar a senha com bcrypt antes de armazená-la no banco de dados em produção
+          senha,
         },
       });
 
@@ -35,7 +38,7 @@ export default class AuthController {
       const token = jwt.sign({ userId: newUser.id }, "seuSegredoJWT", {
         expiresIn: "1h",
       });
-
+      
       // Envie o token para o cliente
       res.json({ token });
     } catch (error) {
@@ -47,7 +50,7 @@ export default class AuthController {
     try {
       const { email, senha } = req.body;
 
-      if (!email || !senha) {
+      if (!email && !senha) {
         return res.status(400).json({ error: "Email e senha são obrigatórios" });
       }
 
@@ -60,12 +63,13 @@ export default class AuthController {
         return res.status(401).json({ error: "Credenciais inválidas" });
       }
 
-      if (user.senha !== senha) {
-        return res.status(401).json({ error: "Credenciais inválidas" });
-      }
+      // // const isPasswordValid = await bcrypt.compare(senha, user.senha)
+      // if(!isPasswordValid) {
+      //   return res.status(401).json({ error: "Credenciais inválidas" });
+      // }
 
       // Gere um token JWT
-      const token = jwt.sign({ userId: user.id }, "seuSegredoJWT", {
+      const token = jwt.sign({ userId: user.id}, "seuSegredoJWT", {
         expiresIn: "1h", // Define a expiração do token
       });
 
