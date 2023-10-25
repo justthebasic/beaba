@@ -4,12 +4,40 @@ import { prisma } from "../database";
 export default class TemplateController {
     static async listArquivo(req: Request, res: Response) {
         try {
-            const arquivos = await prisma.arquivo.findMany();
-            res.json(arquivos);
+            // const arquivos = await prisma.arquivo.findMany();
+            // res.json(arquivos);
+
+            const arquivos = await prisma.arquivo.findMany({
+                include: {
+                  usuario: {
+                    select: {
+                      nome_usuario: true, // Seleciona o nome do usuário
+                    },
+                  },
+                  template: {
+                    select: {
+                      nome_template: true, // Seleciona o nome do template
+                    },
+                  },
+                },
+              });
+    
+              arquivos.forEach((arquivo) => {
+                const nomeUsuario = arquivo.usuario.nome_usuario;
+                const nomeTemplate = arquivo.template.nome_template;
+              
+                console.log(`Nome do usuário: ${nomeUsuario}`);
+                console.log(`Nome do template: ${nomeTemplate}`);
+              });
+
+              res.json(arquivos)
         } catch (error) {
             console.error(error);
             res.status(500).json({ error: 'Erro ao listar arquivos' });
         }
+
+        
+          
     }
 
     static async createArquivo(req: Request, res: Response) {

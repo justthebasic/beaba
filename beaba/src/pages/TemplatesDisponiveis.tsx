@@ -1,5 +1,6 @@
 import { Navbar } from '../components/Navbar'
-import { TableArquivos } from '../components/table/Table'
+// import { TableArquivos } from '../components/table/Table'
+import { TemplateList } from '../components/table/TemplateList'
 
 export const TemplatesDisponiveis = () => {
   return (
@@ -17,7 +18,7 @@ export const TemplatesDisponiveis = () => {
 
           <div className='bg-gray-50 rounded p-4'>
 
-            <TableArquivos />
+            <TemplateList />
           </div>
 
         </div>

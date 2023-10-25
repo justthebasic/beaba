@@ -13,31 +13,33 @@ export default class UserController {
             res.json(users);
         } catch (error) {
             res.status(500).json({ error: 'Erro ao listar usuários' });
-        } finally{
-            
+        } finally {
+
         }
     }
 
-    static async createUser(req: Request, res: Response){
-        try{
-            
-            const {nome_usuario, email, senha} = req.body;
+    static async createUser(req: Request, res: Response) {
+        try {
 
-            if(!nome_usuario || !email || !senha){
-                return res.status(400).json({error: "Todos os campos são obrigatórios"})
+            const { nome_usuario, email, senha } = req.body;
+
+            if (!nome_usuario || !email || !senha) {
+                return res.status(400).json({ error: "Todos os campos são obrigatórios" })
             }
 
 
-            const newUser = await prisma.usuario.create({data:{
-                nome_usuario,
-                email,
-                senha,
-            }});
+            const newUser = await prisma.usuario.create({
+                data: {
+                    nome_usuario,
+                    email,
+                    senha,
+                }
+            });
             res.json(newUser)
-        } catch (error){
-            res.status(400).json({error: 'Erro ao criar um usuário'});
-        } finally{
-            
+        } catch (error) {
+            res.status(400).json({ error: 'Erro ao criar um usuário' });
+        } finally {
+
         }
     }
 

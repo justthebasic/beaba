@@ -2,8 +2,8 @@
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { prisma } from "../database";
-import * as bcrypt from "bcrypt"
-
+import * as bcrypt from "bcrypt";
+// import config from "config";
 
 export default class AuthController {
 
@@ -22,8 +22,11 @@ export default class AuthController {
       if (existingUser) {
         return res.status(400).json({ error: "O email já está em uso" });
       }
-      
+
       // const hashedPassword = await bcrypt.hash(senha, 10);
+      // const salt = await bcrypt.genSalt(config.get<number>("saltWorkFactor"));
+
+      // const hash = await bcrypt.hashSync(user.password, salt);
 
       // Crie um novo usuário
       const newUser = await prisma.usuario.create({
@@ -38,7 +41,7 @@ export default class AuthController {
       const token = jwt.sign({ userId: newUser.id }, "seuSegredoJWT", {
         expiresIn: "1h",
       });
-      
+
       // Envie o token para o cliente
       res.json({ token });
     } catch (error) {
@@ -69,7 +72,7 @@ export default class AuthController {
       // }
 
       // Gere um token JWT
-      const token = jwt.sign({ userId: user.id}, "seuSegredoJWT", {
+      const token = jwt.sign({ userId: user.id }, "seuSegredoJWT", {
         expiresIn: "1h", // Define a expiração do token
       });
 

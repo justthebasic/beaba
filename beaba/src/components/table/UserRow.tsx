@@ -18,10 +18,6 @@ type UserRowProps = {
 }
 
 
-
-
-
-
 export const UserRow = ({ user, onSave, onDelete }: UserRowProps) => {
   const [editedUser, setEditedUser] = useState(user);
 

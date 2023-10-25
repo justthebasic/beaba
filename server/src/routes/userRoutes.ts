@@ -5,6 +5,8 @@ const router = Router();
 
 
 router.get('/api/users', UserController.listUser);
+router.get('/api/users:id', UserController.listUser);
+
 router.post('/api/users', UserController.createUser);
 
 export default router;

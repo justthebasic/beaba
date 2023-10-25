@@ -11,10 +11,6 @@ interface UserListProps{
 }
 
 
-
-
-
-
 const UserList = ({title}: UserListProps) => {
 
   const [users, setUsers] = useState<User[]>([

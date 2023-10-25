@@ -19,6 +19,7 @@ server.use(campoRoutes);
 server.use(arquivoRoutes);
 server.use(authRoutes);
 
+
 server.use((req, res, next) => {
   console.log(`Received ${req.method} request to ${req.url}`);
   next();
