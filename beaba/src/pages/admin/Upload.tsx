@@ -1,5 +1,5 @@
-import { Navbar } from '../components/Navbar'
-import { Input } from '../components/input/Input'
+import { Navbar } from '../../components/Navbar'
+import { Input } from '../../components/input/Input'
 
 export const Upload = () => {
     return (

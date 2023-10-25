@@ -1,6 +1,6 @@
-import { Navbar } from '../components/Navbar'
+import { Navbar } from '../../components/Navbar'
 // import { TableArquivos } from '../components/table/Table'
-import { TemplateList } from '../components/table/TemplateList'
+import { TemplateList } from '../../components/table/TemplateList'
 
 export const TemplatesDisponiveis = () => {
   return (

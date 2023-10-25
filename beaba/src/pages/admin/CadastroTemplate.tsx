@@ -1,10 +1,10 @@
 // import { useState } from 'react'
 import { useForm, FormProvider, useFieldArray } from 'react-hook-form'
-import { Form } from '../components/form'
-import api from '../services/api'
+import { Form } from '../../components/form'
+import api from '../../services/api'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Navbar } from '../components/Navbar'
+import { Navbar } from '../../components/Navbar'
 
 const createTemplateSchema = z.object({
   nome_template: z.string().nonempty({

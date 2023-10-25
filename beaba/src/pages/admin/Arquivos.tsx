@@ -1,5 +1,5 @@
-import { Navbar } from '../components/Navbar'
-import { TableArquivos } from '../components/table/TableArquivos'
+import { Navbar } from '../../components/Navbar'
+import { TableArquivos } from '../../components/table/TableArquivos'
 
 export const Arquivos = () => {
   return (

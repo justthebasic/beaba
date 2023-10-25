@@ -1,5 +1,7 @@
 import { Link, useLocation } from 'react-router-dom'
 import { DropDown } from './DropDown';
+import { useEffect, useState } from 'react';
+import jwt from 'jsonwebtoken';
 
 
 
@@ -7,6 +9,18 @@ import { DropDown } from './DropDown';
 
 export const Navbar = () => {
     const location = useLocation();
+
+    const [decodedToken, setDecodedToken] = useState<{ userId: number, nomeUser: string }[]>([]); // Inicialize com null
+
+    useEffect(() => {
+      const token = localStorage.getItem("accessToken");
+  
+      if (token) {
+        const decoded = jwt_decode(token);
+  
+        setDecodedToken(decoded); // Atualize o estado com os dados decodificados
+      }
+    }, []);
 
 
     return (
@@ -22,7 +36,7 @@ export const Navbar = () => {
                     <div className="flex items-center space-x-4 p-2 mb-5">
                         <img className="h-10 rounded-full" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSngDLxVdX-4fhpWyG8hDPxUWyGV1B9uOXJ3Q&usqp=CAU" alt="avatar" />
                         <div className='flex'>
-                            <h4 className="font-semibold text-xl text-white capitalize font-poppins tracking-wide pr-6">Erick</h4>
+                            <h4 className="font-semibold text-xl text-white capitalize font-poppins tracking-wide pr-6">{decodedToken.userName}</h4>
                             <span className="text-gray-600">
                                 <svg className="h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
@@ -116,3 +130,7 @@ export const Navbar = () => {
         </>
     )
 }
+function jwt_decode(token: string | null) {
+    throw new Error('Function not implemented.');
+}
+

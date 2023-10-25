@@ -18,7 +18,14 @@ export const Login = () => {
     api.post('api/login', {
       email,
       senha
-    }).then(() => {
+    }).then((response) => {
+
+      // Extrair o token da resposta
+      const token = response.data.token;
+
+      // Armazenar o token no localStorage
+      localStorage.setItem('accessToken', token);
+
       setIsUserValid(true)
       alert('Login realizado com sucesso')
       navigate('/dashboard')

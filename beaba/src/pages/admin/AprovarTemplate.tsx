@@ -1,6 +1,6 @@
 import React from 'react'
-import { Navbar } from '../components/Navbar'
-import { TableTemplate } from '../components/table/TemplateAprovar'
+import { Navbar } from '../../components/Navbar'
+import { TableTemplate } from '../../components/table/TemplateAprovar'
 
 export const AprovarTemplate = () => {
   return (

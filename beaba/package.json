@@ -13,6 +13,7 @@
     "@heroicons/react": "^1.0.6",
     "@hookform/resolvers": "^3.3.2",
     "@tremor/react": "^3.7.9",
+    "@types/jsonwebtoken": "^9.0.4",
     "axios": "^1.5.1",
     "chart.js": "^4.4.0",
     "gridjs": "^6.0.6",

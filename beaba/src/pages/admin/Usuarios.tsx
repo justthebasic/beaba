@@ -1,6 +1,6 @@
 import React from 'react'
-import { Navbar } from '../components/Navbar'
-import UserList from '../components/table/UserList'
+import { Navbar } from '../../components/Navbar'
+import UserList from '../../components/table/UserList'
 
 export const Usuarios = () => {
     return (

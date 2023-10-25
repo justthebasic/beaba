@@ -13,7 +13,7 @@ export const Registro = () => {
   const handleCreateUser = (e: FormEvent) => {
     e.preventDefault()
 
-    api.post('api/users', {
+    api.post('api/register', {
       nome_usuario,
       email,
       senha

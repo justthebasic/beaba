@@ -1,4 +1,4 @@
-import { Navbar } from '../components/Navbar'
+import { Navbar } from '../../components/Navbar'
 import {
   Card,
   Grid,
@@ -12,9 +12,9 @@ import {
 
 } from "@tremor/react";
 // import { ChartDonut } from '../components/ChartDonut';
-import { ChartBarMaiorUploads, ChartBarRanking, ChartBarUploads } from '../components/chart/ChartBar';
-import { ChartDonut } from '../components/chart/ChartDonut';
-import { Table } from "../components/table/Table";
+import { ChartBarMaiorUploads, ChartBarRanking, ChartBarUploads } from '../../components/chart/ChartBar';
+import { ChartDonut } from '../../components/chart/ChartDonut';
+import { Table } from "../../components/table/Table";
 
 
 
