@@ -9,7 +9,6 @@ import * as bcrypt from "bcrypt";
 import dotenv from 'dotenv'
 import config from "config";
 import { signJwt } from "../utils/jwt.utils";
-import { ExtractJwt, Strategy as JwtStrategy } from 'passport-jwt';
 // import config from "config";
 
 
@@ -24,15 +23,12 @@ export interface UserInput {
 export default class AuthController {
   static async registerUser(req: Request, res: Response) {
     try {
-      const { nome_usuario, email, senha, cargo, estado } = req.body;
+      const { nome_usuario, email, senha } = req.body;
 
       const saltWorkFactorConfig = parseInt(process.env.SALT_WORK_FACTOR || '10', 10);
       const jwtSecret = process.env.JWT_SECRET;
 
-      const jwtOptions = {
-        jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-        secretOrKey: jwtSecret,
-      };
+
 
 
       if (!nome_usuario || !email || !senha) {
@@ -53,7 +49,7 @@ export default class AuthController {
       const hashedPassword = await bcrypt.hash(senha, saltWorkFactor);
 
       // Crie um novo usuário
-      const newUser = await prisma.usuario.create({
+      const user = await prisma.usuario.create({
         data: {
           email,
           nome_usuario,
@@ -61,8 +57,15 @@ export default class AuthController {
         },
       });
 
+      const payload = {
+        userId: user.id,
+        userName: user.nome_usuario,
+        userCargo: user.cargo,
+        userEstado: user.estado,
+      }
 
-      const token = jwt.sign({ userId: newUser.id, nomeUsuario: nome_usuario, nomeUser: nome_usuario, cargoUser: cargo, estadoUser: estado }, jwtSecret, {
+
+      const token = jwt.sign({ payload }, jwtSecret, {
         expiresIn: "1h",
       });
 
@@ -75,7 +78,7 @@ export default class AuthController {
 
   static async loginUser(req: Request, res: Response) {
     try {
-      const { email, senha, nome_usuario, cargo, estado } = req.body;
+      const { email, senha } = req.body;
 
       if (!email || !senha) {
         return res.status(400).json({ error: "Email e senha são obrigatórios" });
@@ -95,16 +98,32 @@ export default class AuthController {
       if (!isPasswordValid) {
         return res.status(401).json({ error: "Credenciais inválidas" });
       }
+
+      const payload = {
+        userId: user.id,
+        userName: user.nome_usuario,
+        userCargo: user.cargo,
+        userEstado: user.estado,
+      }
+
       const jwtSecret = process.env.JWT_SECRET;
       const accessToken = process.env.ACCESS_TOKEN_SECRET;
 
 
       // Gere um token JWT para o usuário
-      const token = jwt.sign({ userId: user.id, nomeUser: nome_usuario, cargoUser: cargo, estadoUser: estado,  }, jwtSecret, {
+      const token = jwt.sign({ payload }, jwtSecret, {
         expiresIn: "1h",
       });
 
-      res.json({ token });
+      res.json({
+        data: {
+          userId: user.id,
+          userName: user.nome_usuario,
+          userCargo: user.cargo,
+          userEstado: user.estado,
+        },
+        token: token
+      });
     } catch (error) {
       res.status(500).json({ error: "Erro no login" });
     }

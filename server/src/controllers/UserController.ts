@@ -18,28 +18,138 @@ export default class UserController {
         }
     }
 
-    static async createUser(req: Request, res: Response) {
+    static async acceptUser(req: Request, res: Response) {
+
+        const { userId } = req.params;
+
+
         try {
-
-            const { nome_usuario, email, senha } = req.body;
-
-            if (!nome_usuario || !email || !senha) {
-                return res.status(400).json({ error: "Todos os campos são obrigatórios" })
+            const updateUser = await prisma.usuario.update({
+                where: { id: parseInt(userId) },
+                data: { estado: 'ativo' }
+            })
+            if (updateUser.cargo !== 'adm') {
+                return res.status(403).json({ message: 'Permission denied' });
             }
 
+            // if (updateUser.estado !== 'ativo' && updateUser.estado !== 'inativo') {
+            //     return res.status(400).json({ message: 'Invalid status' });
+            // }
 
-            const newUser = await prisma.usuario.create({
-                data: {
-                    nome_usuario,
-                    email,
-                    senha,
-                }
-            });
-            res.json(newUser)
+            res.json(updateUser)
         } catch (error) {
-            res.status(400).json({ error: 'Erro ao criar um usuário' });
-        } finally {
+            console.error(error)
+            res.status(400).json({ error: 'Erro ao aceitar o usuario' });
+        }
+    }
 
+
+    static async ativarUser(req: Request, res: Response) {
+
+        const { userId } = req.params;
+
+
+        try {
+            const updateUser = await prisma.usuario.update({
+                where: { id: parseInt(userId) },
+                data:
+                {
+                    estado: 'ativo',
+                    cargo: 'adm'
+                }
+            })
+            if (updateUser.cargo !== 'adm') {
+                return res.status(403).json({ message: 'Permission denied' });
+            }
+
+            // if (updateUser.estado !== 'ativo' && updateUser.estado !== 'inativo') {
+            //     return res.status(400).json({ message: 'Invalid status' });
+            // }
+
+            res.json(updateUser)
+        } catch (error) {
+            console.error(error)
+            res.status(400).json({ error: 'Erro ao ativar o usuario' });
+        }
+    }
+
+    static async desativarUser(req: Request, res: Response) {
+
+        const { userId } = req.params;
+
+
+        try {
+            const updateUser = await prisma.usuario.update({
+                where: { id: parseInt(userId) },
+                data: { estado: 'inativo' }
+            })
+            if (updateUser.cargo !== 'adm') {
+                return res.status(403).json({ message: 'Permission denied' });
+            }
+
+            // if (updateUser.estado !== 'ativo' && updateUser.estado !== 'inativo') {
+            //     return res.status(400).json({ message: 'Invalid status' });
+            // }
+
+            res.json(updateUser)
+        } catch (error) {
+            console.error(error)
+            res.status(400).json({ error: 'Erro ao desativar o usuario' });
+        }
+    }
+
+    static async cargoUser(req: Request, res: Response) {
+
+        const { userId } = req.params;
+
+
+        try {
+            const updateUser = await prisma.usuario.update({
+                where: { id: parseInt(userId) },
+                data:
+                {
+                    cargo: 'user'
+                }
+            })
+            if (updateUser.cargo !== 'adm') {
+                return res.status(403).json({ message: 'Permission denied' });
+            }
+
+            // if (updateUser.estado !== 'ativo' && updateUser.estado !== 'inativo') {
+            //     return res.status(400).json({ message: 'Invalid status' });
+            // }
+
+            res.json(updateUser)
+        } catch (error) {
+            console.error(error)
+            res.status(400).json({ error: 'Erro ao ativar o usuario' });
+        }
+    }
+    static async cargoAdm(req: Request, res: Response) {
+
+        const { userId } = req.params;
+
+
+        try {
+            const updateUser = await prisma.usuario.update({
+                where: { id: parseInt(userId) },
+                data:
+                {
+                    cargo: 'adm'
+                }
+            })
+            if (updateUser.cargo !== 'adm') {
+                return res.status(403).json({ message: 'Permission denied' });
+            }
+
+            // if (updateUser.estado !== 'ativo' && updateUser.estado !== 'inativo') {
+            //     return res.status(400).json({ message: 'Invalid status' });
+            // }
+
+            res.json(updateUser)
+        } catch (error) {
+            console.error(error)
+            res.status(400).json({ error: 'Erro ao ativar o usuario' });
         }
     }
 

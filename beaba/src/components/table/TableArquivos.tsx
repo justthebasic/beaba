@@ -24,6 +24,8 @@ import "gridjs/dist/theme/mermaid.css";
 export const TableArquivos = () => {
     const [arquivos, setArquivos] = useState([]);
 
+
+    
     useEffect(() => {
         // Recuperar a lista de arquivos do servidor
         api.get('api/arquivos', {

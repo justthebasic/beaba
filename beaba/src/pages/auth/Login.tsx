@@ -2,7 +2,8 @@ import { FormEvent, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import api from '../../services/api'
 import { InputForm } from '../../components/input/InputForm'
-import { useBearStore } from '../../state/state'
+import { useBearStore, useUserStore } from '../../state/state'
+
 
 export const Login = () => {
   const navigate = useNavigate()
@@ -10,8 +11,10 @@ export const Login = () => {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
 
-  const setIsUserValid =  useBearStore((state) => state.setUserValid)
+  const setIsUserValid = useBearStore((state) => state.setUserValid)
+  const user = useUserStore((state) => state.user?.payload);
 
+  
   const handleLogin = (e: FormEvent) => {
     e.preventDefault();
 
@@ -20,21 +23,33 @@ export const Login = () => {
       senha
     }).then((response) => {
 
-      // Extrair o token da resposta
       const token = response.data.token;
-
-      // Armazenar o token no localStorage
       localStorage.setItem('accessToken', token);
-
       setIsUserValid(true)
-      alert('Login realizado com sucesso')
-      navigate('/dashboard')
+
+      console.log(token)
+      if (user) {
+        if (user.userCargo === 'adm' && user.userEstado === 'ativo') {
+          navigate('/dashboard');
+        } else if (user.userCargo === 'user' && user.userEstado === 'ativo') {
+          navigate('/dashboarduser');
+        } else if (user.userCargo === 'adm' && user.userEstado !== 'ativo') {
+          console.log('Usuário adm inativo');
+        } else if (user.userCargo === 'user' && (user.userEstado === 'pendente' || user.userEstado !== 'ativo')) {
+          console.log('Usuário user pendente ou inativo');
+        } else {
+          console.log('Usuário com tipo desconhecido');
+        }
+      } else {
+        console.log('Usuário não autenticado');
+      }
+      
     }).catch(() => {
       alert('Erro no login! Verifique suas credenciais.')
     })
   }
 
-  
+
 
 
   return (
@@ -67,7 +82,7 @@ export const Login = () => {
 
               <form onSubmit={handleLogin} className="flex flex-col pt-3 md:pt-8">
 
-              <InputForm
+                <InputForm
                   name={'email'}
                   type='email'
                   label={'Email'}
@@ -85,9 +100,9 @@ export const Login = () => {
                 />
 
                 <button type="submit" className=" bg-green-600 text-white font-bold text-lg hover:bg-green-700 p-2 mt-4 ">
-                    Entrar
+                  Entrar
                 </button>
-                
+
               </form>
 
               <div className="text-center pt-12 pb-12">
@@ -105,3 +120,5 @@ export const Login = () => {
     </>
   )
 }
+
+

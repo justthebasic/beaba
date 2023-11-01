@@ -1,0 +1,65 @@
+generator client {
+    provider = "prisma-client-py"
+    interface = "asyncio"
+    recursive_type_depth = 5
+
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model arquivo {
+  id              Int      @id @default(autoincrement())
+  nome_arquivo    String   @db.VarChar(45)
+  caminho_arquivo String   @db.VarChar(255)
+  data_envio      DateTime @default(now()) @db.Timestamp(6)
+  estado          Boolean
+  template        template @relation(fields: [template_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  usuario         usuario  @relation(fields: [usuario_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  usuario_id      Int
+  template_id     Int
+}
+
+model campo {
+  id          Int      @id @default(autoincrement())
+  nome_campo  String   @db.VarChar(45)
+  tipo        String   @db.VarChar(45)
+  templates   template @relation(fields: [template_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  template_id Int
+}
+
+model template {
+  id            Int       @id @default(autoincrement())
+  nome_template String    @db.VarChar(45)
+  formato       String    @db.VarChar(45)
+  data_criacao  DateTime  @default(now()) @db.Timestamp(6)
+  estado        status?   @default(pendente)
+  arquivo       arquivo[]
+  campos        campo[]
+  usuario       usuario   @relation(fields: [usuario_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  usuario_id    Int
+}
+
+model usuario {
+  id           Int        @id @default(autoincrement())
+  nome_usuario String     @db.VarChar(255)
+  email        String     @unique @db.VarChar(45)
+  senha        String     @db.VarChar(60)
+  cargo        permissao? @default(user)
+  estado       status?    @default(pendente)
+  arquivo      arquivo[]
+  template     template[]
+}
+
+enum permissao {
+  adm
+  user
+}
+
+enum status {
+  ativo
+  inativo
+  pendente
+}

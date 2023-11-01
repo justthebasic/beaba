@@ -5,8 +5,12 @@ const router = Router();
 
 
 router.get('/api/users', UserController.listUser);
-router.get('/api/users:id', UserController.listUser);
+// router.get('/api/users:id', UserController.listUser);
 
-router.post('/api/users', UserController.createUser);
+router.patch('/api/users/:userId/accept', UserController.acceptUser);
+router.patch('/api/users/:userId/ativar', UserController.ativarUser);
+router.patch('/api/users/:userId/desativar', UserController.desativarUser);
+router.patch('/api/users/:userId/cargoUser', UserController.cargoUser);
+router.patch('/api/users/:userId/cargoAdm', UserController.cargoUser);
 
 export default router;

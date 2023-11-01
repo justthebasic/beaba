@@ -9,6 +9,9 @@ import axios from "axios";
 
 
 export default class TemplateController {
+    static authenticateGoogleDrive(arg0: string, authenticateGoogleDrive: any) {
+        throw new Error("Method not implemented.");
+    }
     static async listTemplate(req: Request, res: Response) {
         try {
             const templates = await prisma.template.findMany();
@@ -19,58 +22,39 @@ export default class TemplateController {
         }
     }
 
-    // static async connecFlask(req: Request, res: Response) {
-    //     try {
-    //         const response = await axios.get('http://127.0.0.1:5000/flask');
-
-    //         res.json(response.data);
-    //     } catch (error) {
-    //         console.error(error)
-    //         res.status(500).send('Erro ao chamar o servidor Flask.')
-    //     }
-    // }
-
-    static async downloadTemplate(req: Request, res: Response) {
-        
+    static async connecFastapi(req: Request, res: Response) {
         try {
             const { templateId, formato } = req.params;
-            const response = await axios.get(`http://127.0.0.1:5000/api/templates/${templateId}/download/${formato}`);
-
-            res.json(response.data);
-            // Verifique se o formato solicitado é válido (pode adicionar mais validações)
-            const validFormats = ['csv', 'xls', 'xlsx'];
-            if (!validFormats.includes(formato)) {
-                return res.status(400).json({ error: 'Formato inválido' });
-            }
+           
 
             const template = await prisma.template.findUnique({
                 where: { id: parseInt(templateId) },
             });
 
-            if (!template) {
-                return res.status(404).json({ error: 'Template não encontrado' });
-            }
             const template_data = {
                 id: template.id,
-                // name: template.nome_template,
-                formato: template.formato
+                name: template.nome_template,
+                formato: template.formato,
+                
                 
                 // Adicione outras propriedades do template aqui
             };
 
+            return res.json(template_data);
+        } catch (error) {
+            console.error(error)
+            res.status(500).send('Erro ao chamar o servidor fastapi.')
+        }
+    }
 
-            // Construa o caminho do arquivo com base no templateId e formato
-            const templateFilePath = path.join(__dirname, `./uploads/${templateId}.${formato}`);
+    static async downloadExcel(req: Request, res: Response) {
+        
+        try {
+            
+            const response = await axios.get(`http://127.0.0.1:8000/download-excel`);
 
-            // Verifique se o arquivo existe
-            if (!fs.existsSync(templateFilePath)) {
-                return res.status(404).json({ error: 'Arquivo não encontrado' });
-            }
-
-            // Envie o arquivo como resposta para download
-            res.setHeader('Content-Type', `application/${formato}`, );
-            res.setHeader('Content-Disposition', `attachment; filename=template.${formato}`);
-            res.sendFile(templateFilePath);
+            res.json(response.data);
+            
             // return res.json(template_data);
         } catch (error) {
             console.error(error);
@@ -136,7 +120,7 @@ export default class TemplateController {
         }
     }
 
-    static async activateTemplate(req: Request, res: Response) {
+    static async ativarTemplate(req: Request, res: Response) {
         const { templateId } = req.params;
 
         try {
@@ -153,7 +137,7 @@ export default class TemplateController {
         }
     }
 
-    static async deactivateTemplate(req: Request, res: Response) {
+    static async desativarTemplate(req: Request, res: Response) {
         const { templateId } = req.params;
 
         try {

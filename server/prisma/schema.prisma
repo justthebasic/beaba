@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  
 }
 
 datasource db {
@@ -44,8 +45,8 @@ model usuario {
   nome_usuario String     @db.VarChar(255)
   email        String     @unique @db.VarChar(45)
   senha        String     @db.VarChar(60)
-  cargo        permissao?
-  estado       status?
+  cargo        permissao? @default(user)
+  estado       status?    @default(pendente)
   arquivo      arquivo[]
   template     template[]
 }

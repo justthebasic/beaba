@@ -9,4 +9,7 @@ router.post('/api/register', AuthController.registerUser);
 // Rota de login de usuário
 router.post('/api/login', AuthController.loginUser);
 
+// router.post('/refresh-token', refreshToken);
+
+
 export default router;

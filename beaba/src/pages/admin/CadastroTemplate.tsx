@@ -4,7 +4,7 @@ import { Form } from '../../components/form'
 import api from '../../services/api'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Navbar } from '../../components/Navbar'
+import { Navbar } from '../../components/navbar/Navbar'
 
 const createTemplateSchema = z.object({
   nome_template: z.string().nonempty({
@@ -91,10 +91,10 @@ export const CadastroTemplate = () => {
               </Form.Field>
             </div>
 
-            <div className='flex my-10 gap-6'>
+            <div className='flex my-10 gap-4'>
               <h1 className=''>Formatos de arquivo:</h1>
               <Form.Field>
-                <Form.Label>
+                <Form.Label className='flex gap-2'>
                   CSV
                   <Form.Input
                     type="radio"
@@ -104,7 +104,7 @@ export const CadastroTemplate = () => {
                 </Form.Label>
               </Form.Field>
               <Form.Field>
-                <Form.Label>
+                <Form.Label className='flex gap-2'>
                   XLS
                   <Form.Input
                     type="radio"
@@ -114,7 +114,7 @@ export const CadastroTemplate = () => {
                 </Form.Label>
               </Form.Field>
               <Form.Field>
-                <Form.Label>
+                <Form.Label className='flex gap-2'>
                   XLSX
                   <Form.Input
                     type="radio"

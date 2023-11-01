@@ -1,5 +1,4 @@
-import React from 'react'
-import { Navbar } from '../../components/Navbar'
+import { Navbar } from '../../components/navbar/Navbar'
 import { TableTemplate } from '../../components/table/TemplateAprovar'
 
 export const AprovarTemplate = () => {
@@ -15,7 +14,6 @@ export const AprovarTemplate = () => {
             <h1>Aprovar Templates</h1>
           </div>
           <div>
-
             <TableTemplate />
           </div>
         </div>
