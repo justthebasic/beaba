@@ -58,9 +58,9 @@ export default class UserController {
                     cargo: 'adm'
                 }
             })
-            if (updateUser.cargo !== 'adm') {
-                return res.status(403).json({ message: 'Permission denied' });
-            }
+            // if (updateUser.cargo !== 'adm') {
+            //     return res.status(403).json({ message: 'Permission denied' });
+            // }
 
             // if (updateUser.estado !== 'ativo' && updateUser.estado !== 'inativo') {
             //     return res.status(400).json({ message: 'Invalid status' });
@@ -83,9 +83,9 @@ export default class UserController {
                 where: { id: parseInt(userId) },
                 data: { estado: 'inativo' }
             })
-            if (updateUser.cargo !== 'adm') {
-                return res.status(403).json({ message: 'Permission denied' });
-            }
+            // if (updateUser.cargo !== 'adm') {
+            //     return res.status(403).json({ message: 'Permission denied' });
+            // }
 
             // if (updateUser.estado !== 'ativo' && updateUser.estado !== 'inativo') {
             //     return res.status(400).json({ message: 'Invalid status' });
@@ -111,9 +111,9 @@ export default class UserController {
                     cargo: 'user'
                 }
             })
-            if (updateUser.cargo !== 'adm') {
-                return res.status(403).json({ message: 'Permission denied' });
-            }
+            // if (updateUser.cargo !== 'adm') {
+            //     return res.status(403).json({ message: 'Permission denied' });
+            // }
 
             // if (updateUser.estado !== 'ativo' && updateUser.estado !== 'inativo') {
             //     return res.status(400).json({ message: 'Invalid status' });
@@ -138,9 +138,9 @@ export default class UserController {
                     cargo: 'adm'
                 }
             })
-            if (updateUser.cargo !== 'adm') {
-                return res.status(403).json({ message: 'Permission denied' });
-            }
+            // if (updateUser.cargo !== 'adm') {
+            //     return res.status(403).json({ message: 'Permission denied' });
+            // }
 
             // if (updateUser.estado !== 'ativo' && updateUser.estado !== 'inativo') {
             //     return res.status(400).json({ message: 'Invalid status' });

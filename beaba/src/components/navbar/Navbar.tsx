@@ -1,8 +1,7 @@
 import { Link, useLocation } from 'react-router-dom'
 import { DropDown } from '../DropDown';
 import { useBearStore, useUserStore } from '../../state/state';
-// import { useEffect, useState } from 'react';
-// import jwt from 'jsonwebtoken';
+
 
 
 
@@ -13,27 +12,28 @@ export const Navbar = () => {
     const setIsUserValid = useBearStore((state) => state.setUserValid)
 
     const user = useUserStore((state) => state.user);
+    const { logout } = useUserStore();
 
 
+    const handleLogout = () => {
+        // Remover o token do localStorage
+        localStorage.removeItem('accessToken');
+        // Invalidar o usuário no estado global
+        setIsUserValid(false);
+        // Limpar as informações do usuário no estado global
+        logout(null);
+        
+        // Redirecionar para a página de login ou para a página inicial, se necessário
+        // Exemplo: navigate('/login');
+      };
 
-    // const [decodedToken, setDecodedToken] = useState<{ userId: number, nomeUser: string }[]>([]); // Inicialize com null
-
-    // useEffect(() => {
-    //   const token = localStorage.getItem("accessToken");
-
-    //   if (token) {
-    //     const decoded = jwt_decode(token);
-
-    //     setDecodedToken(decoded); // Atualize o estado com os dados decodificados
-    //   }
-    // }, []);
-
+    
 
     return (
         <>
 
-            <div className="flex flex-wrap bg-white h-full">
-                <div className="w-60 bg-green-600 rounded p-3 shadow-lg flex-col justify-center">
+            <div className="flex fixed  bg-white h-screen">
+                <div className="w-60  bg-green-600 rounded p-3 shadow-lg  justify-center">
                     <div className='w-full mb-6 text-center items-center justify-center'>
                         <Link to={'/dashboard'}>
 
@@ -124,7 +124,7 @@ export const Navbar = () => {
 
                             <li>
                                 <button
-                                    onClick={() => setIsUserValid(false)}
+                                    onClick={ handleLogout}
                                     className='flex justify-center w-full items-center space-x-3 text-red-600 p-2 mt-11 rounded-md font-medium hover:bg-green-500 focus:bg-green-500 focus:shadow-outline'>
                                     Sair
                                 </button>

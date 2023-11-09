@@ -2,12 +2,30 @@ import { FormEvent, useEffect, useState } from 'react';
 import api from '../../services/api'
 import { Grid, _ } from 'gridjs-react'
 import "gridjs/dist/theme/mermaid.css";
-import { useReactTable } from '@tanstack/react-table'
+// import { useReactTable } from '@tanstack/react-table'
+import { StatusOnlineIcon } from "@heroicons/react/outline";
+import {
+    Badge,
+    Button,
+    Card,
+    MultiSelect,
+    MultiSelectItem,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeaderCell,
+    TableRow,
+    Text,
+    Title,
+} from "@tremor/react";
 
 
 
 export const TableTemplate = () => {
     const [templates, setTemplates] = useState([]);
+    const [selectedTemplate, setSelectedTemplate] = useState<string>('');
+
 
     useEffect(() => {
         // Recuperar a lista de templates do servidor
@@ -37,6 +55,10 @@ export const TableTemplate = () => {
         });
     };
 
+
+    const isSelected = (template) =>
+        selectedTemplate.includes(template.nome_template) || selectedTemplate.length === 0;
+
     return (
         <>
             {/* <h1>Lista de Templates</h1>
@@ -54,32 +76,67 @@ export const TableTemplate = () => {
             </ul> */}
 
             <div className='flex-col h-auto mt-10'>
+                <Card>
+                    <MultiSelect
+                        onValueChange={setSelectedTemplate}
+                        placeholder="Select Salespeople..."
+                        className="max-w-xs mb-6"
+                    >
+                        {templates.map((template) => (
+                            <MultiSelectItem key={template.nome_template} value={template.nome_template}>
+                                {template.nome_usuario}
+                            </MultiSelectItem>
+                        ))}
+                    </MultiSelect>
+
+                    
+                    <Table className="h-full w-full">
+                        <TableHead>
+                            <TableRow>
+                                <TableHeaderCell>Nome template</TableHeaderCell>
+                                <TableHeaderCell>Formato</TableHeaderCell>
+                                <TableHeaderCell>Status</TableHeaderCell>
 
 
-                <Grid
-                    columns={['Nome Template', 'Nº colunas', 'Aprovação', 'Visualizar']}
-                    search={true}
-                    sort={true}
-                    autoWidth={true}
-                    pagination={{
-                        limit: 6,
-                    }}
-                    data={templates.map((template) => ([
-                        [`${template.nome_template}`],
-                        [`${template.campos}`],
-                        [_(<button onClick={() => handleToggleTemplate(template.id, template.estado)} className="inline-flex text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover-bg-indigo-600 rounded text-lg">
-                            {template.estado === 'ativo' ? 'Desativar' : 'Ativar'}
-                        </button>)],
-                        [_(<button className={"py-2 px-4  rounded-md text-black  "} onClick={() => alert('Visualizar')}>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            </svg>
-                        </button>)],
+                                <TableHeaderCell>Aprovação</TableHeaderCell>
+                                <TableHeaderCell>Visualizar</TableHeaderCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {templates.filter((template) => isSelected(template)).map((template) => (
+                                <TableRow key={template.nome_template}>
+                                    <TableCell>{template.nome_template}</TableCell>
+                                    <TableCell>
+                                        <Text>{template.formato}</Text>
+                                    </TableCell>
 
 
-                    ]))}
-                />
+                                    <TableCell>
+                                        <Badge color="emerald" icon={StatusOnlineIcon}>
+                                            {template.estado}
+                                        </Badge>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Button onClick={() => handleToggleTemplate(template.id, template.estado)} className="inline-flex text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover-bg-indigo-600 rounded text-lg">
+                                            {template.estado === 'ativo' ? 'Desativar' : 'Ativar'}
+                                        </Button>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Button className={"py-2 px-4  rounded-md text-black  "} onClick={() => alert('Visualizar')}>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            </svg>
+                                        </Button>
+                                    </TableCell>
+
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </Card>
+
+                
 
 
             </div>

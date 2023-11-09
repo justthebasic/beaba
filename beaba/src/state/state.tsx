@@ -2,43 +2,30 @@ import { create } from 'zustand'
 import { jwtDecode } from "jwt-decode";
 
 
-interface DecodedToken {
+export interface DecodedToken {
   payload: { userEstado: string; userCargo: string; userName: string; userId: number };
   userEstado: string;
   userCargo: string;
   userName: string;
-  
+
   // Adicione outras propriedades conforme necessário
 }
 
-const getDecodedToken = () => {
-  const token = localStorage.getItem('accessToken');
-  if (token) {
-    const decoded = jwtDecode<DecodedToken>(token)
-    console.log(token)
-    // console.log(decoded)
-    console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-    return decoded
-  }
-  return null;
-}
-const decodedToken = getDecodedToken();
+// const getDecodedToken = () => {
+//   const token = localStorage.getItem('accessToken');
+//   if (token) {
+//     const decoded = jwtDecode<DecodedToken>(token)
+//     console.log(token)
+//     console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+//     return decoded
+//   }
+//   return null;
+// }
 
-if (decodedToken) {
-  const { userEstado, userCargo } = decodedToken.payload;
 
-  if (userEstado == "pendente" && userCargo == "user") {
-    // Usuário pendente precisa da aprovação do admin
-    // Implemente a lógica aqui, como a exibição de uma mensagem
-    console.log("usuario pendente")
-  }
-  
-  // Outras lógicas de regras de negócio
-}
-console.log(decodedToken?.payload.userName);
-console.log(decodedToken?.payload.userCargo);
 
-console.log(decodedToken)
+
+
 
 type BearStore = {
   isUserValid: boolean;
@@ -48,7 +35,9 @@ type BearStore = {
 type UserStoreState = {
   user: DecodedToken | null;
   setUser: (user: DecodedToken | null) => void;
+  logout: (user: null) => void;
 }
+
 
 export const useBearStore = create<BearStore>((set) => ({
   isUserValid: false,
@@ -57,10 +46,28 @@ export const useBearStore = create<BearStore>((set) => ({
 }))
 
 
-export const useUserStore = create<UserStoreState>((set) => ({
-  user: getDecodedToken(),
-  setUser: (user) => set({ user }),
-}));
+// export const useUserStore = create<UserStoreState>((set) => ({
+//   user: null,
+//   setUser: (user) => set({ user }),
+// }));
 
+// const decodedToken = getDecodedToken();
+// useUserStore.setState({ user: decodedToken });
+export const useUserStore = create<UserStoreState>((set) => ({
+  user: null,
+  setUser: (user) => set({ user }),
+  getDecodedToken: () => {
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      const decoded = jwtDecode<DecodedToken>(token);
+      return decoded;
+    }
+    return null;
+  },
+  logout: () => {
+    localStorage.removeItem('accessToken');
+    set({ user: null });
+  },
+}));
 
 

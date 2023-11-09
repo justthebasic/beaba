@@ -91,18 +91,7 @@ export const DropDown = () => {
                                                 <span>Cadastro Template</span>
                                             </Link>
                                         </li>
-                                        <li>
-                                            <Link to={"/aprovartemplate"}
-                                                className={`flex items-center space-x-3 text-white p-2 rounded-md font-medium hover:bg-green-500 focus:bg-green-500 focus:shadow-outline 
-                            ${location.pathname === '/usuarios' ? 'bg-green-500' : ''}`}>
-                                                <span className="text-gray-600">
-                                                    <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        {/* <!-- Adicione o ícone apropriado aqui --> */}
-                                                    </svg>
-                                                </span>
-                                                <span>Aprovar Template</span>
-                                            </Link>
-                                        </li>
+                                       
                                         <li>
                                             <Link to={"/templatesdisponiveis"}
                                                 className={`flex items-center space-x-3 text-white p-2 rounded-md font-medium hover:bg-green-500 focus:bg-green-500 focus:shadow-outline 

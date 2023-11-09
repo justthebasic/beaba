@@ -13,20 +13,15 @@ export const NavbarUser = () => {
     const user = useUserStore((state) => state.user?.payload);
     const setIsUserValid = useBearStore((state) => state.setUserValid)
 
+    const { logout } = useUserStore();
 
 
+    const handleLogout = () => {
+        localStorage.removeItem('accessToken');
+        setIsUserValid(false);
+        logout(null);
 
-    // const [decodedToken, setDecodedToken] = useState<{ userId: number, nomeUser: string }[]>([]); // Inicialize com null
-
-    // useEffect(() => {
-    //   const token = localStorage.getItem("accessToken");
-
-    //   if (token) {
-    //     const decoded = jwt_decode(token);
-
-    //     setDecodedToken(decoded); // Atualize o estado com os dados decodificados
-    //   }
-    // }, []);
+    };
 
 
     return (
@@ -43,10 +38,10 @@ export const NavbarUser = () => {
                         <div className='flex'>
                             <h4 className="font-semibold text-xl text-white capitalize font-poppins tracking-wide pr-6">
                                 {user && (
-                                <div>
-                                    <p>{user.userName}</p>
-                                </div>
-                            )}
+                                    <div>
+                                        <p>{user.userName}</p>
+                                    </div>
+                                )}
                             </h4>
                             <span className="text-gray-600">
                                 <svg className="h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -110,7 +105,7 @@ export const NavbarUser = () => {
 
                             <li>
                                 <button
-                                    onClick={() => setIsUserValid(false)}
+                                    onClick={handleLogout}
                                     className='flex justify-center w-full items-center space-x-3 text-red-600 p-2 mt-11 rounded-md font-medium hover:bg-green-500 focus:bg-green-500 focus:shadow-outline'>
                                     Sair
                                 </button>

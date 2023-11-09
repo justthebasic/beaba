@@ -12,10 +12,14 @@ import {
 
 } from "@tremor/react";
 // import { ChartDonut } from '../components/ChartDonut';
-import { ChartBarMaiorUploads, ChartBarRanking, ChartBarUploads } from '../../components/chart/ChartBar';
-import { ChartDonut } from '../../components/chart/ChartDonut';
+import { ChartBarEstados, ChartBarMaiorUploads, ChartBarRanking, ChartBarUploads } from '../../components/chart/ChartBar';
+
 import { Table } from "../../components/table/Table";
 import { NavbarUser } from "../../components/navbar/NavbarUser";
+import { TableArquivosUser } from "../../components/tableUser/TableArquivosUser";
+import { TemplatesTotal, UploadsTotal, UsuariosTotal } from "../../components/chart/InfoGerais";
+import { TemplatesTotalUser, UploadsTotalUser } from "../../components/chartUser/InfoGeraisUser";
+import { ChartBarEstadosUser, ChartBarRankingFormatUser, ChartBarRankingUser } from "../../components/chartUser/ChartBarUser";
 
 
 
@@ -69,10 +73,12 @@ export const DashboardUser = () => {
   return (
     <>
       <div className='flex h-screen font-sans'>
+        <div className='fixed h-screen '>
 
-        <NavbarUser />
+          <NavbarUser />
+        </div>
 
-        <main className="p-12 m-auto ">
+        <main className=" flex-auto ml-64 p-4  ">
           <Title>
             <h1 className='text-2xl text-black'>Dashboard</h1>
           </Title>
@@ -86,38 +92,30 @@ export const DashboardUser = () => {
 
             <TabPanels>
               <TabPanel>
-                <Grid numItemsMd={2} numItemsLg={3} className="gap-6 mt-6">
+                <Grid numItemsMd={2} numItemsLg={2} className="gap-6 mt-6">
                   <Card>
-                    <Title>Templates Cadastrados</Title>
-
-                    <div className="h-28 " />
+                    <div className='flex text-center justify-center m-auto center'>
+                      <TemplatesTotalUser />
+                    </div>
+                    <div className="h-22 " />
                   </Card>
                   <Card>
-                    <Title>Maior Quantia de uploads</Title>
 
-                    <div className="h-28" />
-                  </Card>
-                  <Card>
-                    <Title>Ranking Formatos</Title>
+                    <div className='flex text-center justify-center m-auto center'>
+                      <UploadsTotalUser />
+                    </div>
 
-                    <div className="h-28" />
+                    <div className="h-22" />
                   </Card>
+
                 </Grid>
-                <Grid numItemsMd={2} numItemsLg={3} className="gap-6 mt-6">
-                  <Card>
+                <Grid numItemsMd={2} numItemsLg={1} className="gap-6 mt-6">
 
-                    <ChartBarUploads />
-                    <div className="h-30" />
-                  </Card>
-                  <Card>
-                    <ChartBarMaiorUploads />
+                  <Card >
 
-                    <div className="h-30" />
-                  </Card>
-                  <Card>
-                    <ChartBarRanking />
-
-                    <div className="h-30" />
+                    <div className='justify-center m-auto center w-full'>
+                      <TableArquivosUser />
+                    </div>
                   </Card>
                 </Grid>
 
@@ -125,23 +123,20 @@ export const DashboardUser = () => {
 
               {/* detail */}
               <TabPanel>
-                <div className="mt-6 ">
+                
+                <Grid numItemsMd={2} numItemsLg={2} className="gap-6 mt-6">
+
                   <Card>
-                    <div>
-                      <div className='flex items-center'>
-                        <ChartBarUploads />
-                        <ChartDonut />
-                      </div>
-                      <div className=''>
-                        <Table />
-                      </div>
+                    <ChartBarEstadosUser />
 
-                    </div>
-
-
-                    <div className="" />
+                    <div className="h-30" />
                   </Card>
-                </div>
+                  <Card>
+                    <ChartBarRankingFormatUser />
+
+                    <div className="h-30" />
+                  </Card>
+                </Grid>
               </TabPanel>
             </TabPanels>
           </TabGroup>

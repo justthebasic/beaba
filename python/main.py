@@ -13,7 +13,8 @@ app.include_router(apis, prefix="/apis")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # Configure isso para permitir apenas origens específicas
-    allow_methods=["http://localhost:5173"],
+    allow_methods=["*"],
+    allow_credentials=True,
     allow_headers=["*"],
 )
 

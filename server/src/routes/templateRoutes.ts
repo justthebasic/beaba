@@ -13,7 +13,7 @@ router.patch('/api/templates/:templateId/desativar', TemplateController.desativa
 
 router.get("/api/templates/:templateId/download/:formato", TemplateController.connecFastapi)
 
-router.get('/download-excel', TemplateController.downloadExcel);
+
 // router.get('/api/templates/:templateId', TemplateController.downloadTemplate);
 
 // router.get('/home', TemplateController.connecFlask) 

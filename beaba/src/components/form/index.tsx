@@ -2,6 +2,7 @@ import { Field } from "./Field"
 import { Label } from "./Label"
 import { Input } from "./Input"
 import { ErrorMessage } from "./ErrorMessage"
+import { Select } from "./Select"
 
 
 export const Form = {
@@ -9,6 +10,7 @@ export const Form = {
     Label,
     Input,
     Field,
+    Select
 }
 
 

@@ -5,6 +5,7 @@ import api from '../../services/api'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Navbar } from '../../components/navbar/Navbar'
+import { useUserStore } from '../../state/state'
 
 const createTemplateSchema = z.object({
   nome_template: z.string().nonempty({
@@ -29,13 +30,14 @@ type CreateTemplateData = z.infer<typeof createTemplateSchema>;
 
 export const CadastroTemplate = () => {
   // const [output, setOutput] = useState('');
+  const user = useUserStore((state) => state.user?.payload);
 
   const createTemplateForm = useForm<CreateTemplateData>({
     resolver: zodResolver(createTemplateSchema),
   });
 
   async function createTemplate(data: CreateTemplateData) {
-    const userId = 72
+    const userId = user?.userId
     try {
       const response = await api.post('api/templates', {
         nome_template: data.nome_template,
@@ -70,18 +72,18 @@ export const CadastroTemplate = () => {
   }
 
   return (
-    <div className='flex'>
-      <div>
-        <Navbar/>
+    <div className='flex h-screen'>
+      <div className='fixed h-screen '>
+        <Navbar />
       </div>
 
       <FormProvider {...createTemplateForm}>
         <form onSubmit={handleSubmit(createTemplate)}>
-          <div className='text-center m-10 w-screen h-screen justify-center'>
-            <div className='space-y-10'>
-              <div className='text-center text-2xl'>
+              <div className='text-center text-2xl m-10'>
                 <h1>Cadastro templates</h1>
               </div>
+          <div className='text-center m-10 w-screen h-screen justify-center flex-auto ml-64 p-4'>
+            <div className='space-y-10'>
               <Form.Field className='flex gap-2 w-1/3'>
                 <Form.Label htmlFor="nome_template">
                   Nome do Template
@@ -129,7 +131,7 @@ export const CadastroTemplate = () => {
               <h1>Campos:</h1>
               <Form.Field>
                 <Form.Label className=' w-28 h-20  '>
-                  
+
                   <button
                     type="button"
                     onClick={addNewField}
@@ -155,9 +157,15 @@ export const CadastroTemplate = () => {
                         <Form.Label htmlFor={`campos[${index}].tipo`}>
                           Tipo do Campo
                         </Form.Label>
-                        <Form.Input
-                          type="text"
+                        <Form.Select
                           name={`campos[${index}].tipo`}
+                          options={[
+                            { value: "str", label: "String" },
+                            { value: "int64", label: "Inteiro" },
+                            { value: "float", label: "Float" },
+                            { value: "datetime", label: "DateTime" },
+                            { value: "boolean", label: "Boolean" }
+                          ]}
                         />
                         <Form.ErrorMessage field={`campos[${index}].tipo`} />
                       </Form.Field>
@@ -174,9 +182,9 @@ export const CadastroTemplate = () => {
               </Form.Field>
             </div>
 
-            
+
             <button type='submit' className="flex justify-center items-center text-white bg-green-500 border-0 py-2 px-6 focus:outline-none hover:bg-green-600 rounded text-lg">
-                Cadastrar
+              Cadastrar
             </button>
           </div>
         </form>

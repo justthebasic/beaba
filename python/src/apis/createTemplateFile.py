@@ -29,19 +29,19 @@ async def get_template(template_id: int):
     template = await prisma.template.find_unique(where={"id": template_id}, include={"campos": True})
     return template
 
-# Função para buscar dados do banco (substitua pela lógica real)
+# Função para buscar dados do banco 
 async def get_data_from_db(template_id: int):
     template = await prisma.template.find_unique(where={"id": template_id}, include={"campos": True})
 
     # Extraia os nomes dos campos e tipos
     campos = template.campos
     campo_names = [campo.nome_campo for campo in campos]
-    campo_tipos = [campo.tipo for campo in campos]
+    # campo_tipos = [campo.tipo for campo in campos]
 
     # Crie um DataFrame com base nos campos e tipos
     data = {
         'Campos': campo_names,
-        'Tipos': campo_tipos,
+        # 'Tipos': campo_tipos,
     }
     df = pd.DataFrame(data)
 

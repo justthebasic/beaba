@@ -1,16 +1,33 @@
 import { useEffect, useState } from 'react';
 import api from '../../services/api'
-import { Grid, _ } from 'gridjs-react'
+
 import "gridjs/dist/theme/mermaid.css";
 import { useUserStore } from '../../state/state';
+import { StatusOnlineIcon } from "@heroicons/react/outline";
+import {
+  Badge,
+  Button,
+  Card,
+  MultiSelect,
+  MultiSelectItem,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeaderCell,
+  TableRow,
+  Text,
+  Title,
+} from "@tremor/react";
 
-interface UserListProps {
-  title: string;
-}
 
-export const UserList = ({ title }: UserListProps) => {
+
+export const UserList = () => {
   const [users, setUsersStatus] = useState([]);
   const user = useUserStore((state) => state.user);
+  const [selectedUsuario, setSelectedUsuario] = useState<string>('');
+  const [selectedEstado, setSelectedEstado] = useState<string>('');
+
 
   useEffect(() => {
     // Recuperar a lista de users do servidor
@@ -34,7 +51,7 @@ export const UserList = ({ title }: UserListProps) => {
     const action = isActive ? 'ativar' : 'desativar';
 
     // Fazer a solicitação para ativar ou desativar o template
-    
+
     api.patch(`/api/users/${userId}/${action}`).then((response) => {
       // Atualizar o estado do template na interface
       const updateUsers = users.map((usuario) => {
@@ -56,7 +73,7 @@ export const UserList = ({ title }: UserListProps) => {
     const action = isAdm ? 'cargoUser' : 'cargoAdm';
 
     // Fazer a solicitação para ativar ou desativar o template
-    
+
     api.patch(`/api/users/${userId}/${action}`).then((response) => {
       // Atualizar o estado do template na interface
       const updateUsers = users.map((usuario) => {
@@ -68,9 +85,18 @@ export const UserList = ({ title }: UserListProps) => {
       setUsersStatus(updateUsers);
     });
   };
-  
 
-  const pendenteUsers = users.filter(usuario => usuario.estado === 'pendente');
+  const isSelected = (usuario) => {
+    const isSelectedUsuario = selectedUsuario.includes(usuario.nome_usuario) || selectedUsuario.length === 0;
+    const isSelectedEstado = selectedEstado.includes(usuario.estado) || selectedEstado.length === 0;
+
+    return isSelectedUsuario && isSelectedEstado;
+
+  }
+
+  // const isSelectedEstado = (usuario) =>
+
+  // const pendenteUsers = users.filter(usuario => usuario.estado === 'pendente');
 
 
   return (
@@ -78,60 +104,86 @@ export const UserList = ({ title }: UserListProps) => {
 
 
       <div className='flex-col h-auto mt-10'>
-        <div className='p-4 flex"'>
-          <h1 className='text-3xl'>{title}</h1>
-        </div>
+        
 
-        <Grid
-          columns={['Nome Usuario', 'Email', 'Estado', 'Cargo', 'Ativação']}
-          search={true}
-          sort={true}
-          autoWidth={true}
-          pagination={{
-            limit: 3,
-          }}
-          data={pendenteUsers.map((usuario) => ([
-            [`${usuario.nome_usuario}`],
-            [`${usuario.email}`],
-            [`${usuario.estado}`],
-            [_(<select
-              className={"py-2 px-4 border rounded-md text-white bg-blue-600"}
-              onClick={() => handleToggleUserAdm(usuario.id, usuario.estado)}>
-              <option>{usuario.cargo === 'user' ? 'user' : 'user'}</option>
-              <option>{usuario.cargo === 'user' ? 'adm' : 'adm'}</option>
-            </select>)],
-            [_(<button
-              className={"py-2 px-4 border rounded-md text-white bg-blue-600"}
-              onClick={() => handleToggleUser(usuario.id, usuario.estado)}>
-              {usuario.estado === 'ativo' ? 'Desativar' : 'Ativar'}
-            </button>)],
-          ]))}
-        />
-        <Grid
-          columns={['Nome Usuario', 'Email', 'Estado', 'Cargo', 'Ativação']}
-          search={true}
-          sort={true}
-          autoWidth={true}
-          pagination={{
-            limit: 3,
-          }}
-          data={users.map((usuario) => ([
-            [`${usuario.nome_usuario}`],
-            [`${usuario.email}`],
-            [`${usuario.estado}`],
-            [_(<select
-              className={"py-2 px-4 border rounded-md text-white bg-blue-600"}
-              onClick={() => handleToggleUserAdm(usuario.id, usuario.estado)}>
-              <option>{usuario.cargo === 'user' ? 'user' : 'user'}</option>
-              <option>{usuario.cargo === 'user' ? 'adm' : 'adm'}</option>
-            </select>)],
-            [_(<button
-              className={"py-2 px-4 border rounded-md text-white bg-blue-600"}
-              onClick={() => handleToggleUser(usuario.id, usuario.estado)}>
-              {usuario.estado === 'ativo' ? 'Desativar' : 'Ativar'}
-            </button>)],
-          ]))}
-        />
+        <Card>
+          <div className='flex gap-6'>
+
+          <MultiSelect
+            onValueChange={setSelectedUsuario}
+            placeholder="Selecionar usuario"
+            className="max-w-xs mb-6"
+          >
+            {users.map((usuario) => (
+              <MultiSelectItem key={usuario.nome_usuario} value={usuario.nome_usuario}>
+                {usuario.nome_usuario}
+              </MultiSelectItem>
+            ))}
+          </MultiSelect>
+          <MultiSelect
+            onValueChange={setSelectedEstado}
+            placeholder="Selecionar estado"
+            className="max-w-xs mb-6"
+          >
+            {users.map((usuario) => (
+              <MultiSelectItem key={usuario.estado} value={usuario.estado}>
+                {usuario.estado}
+              </MultiSelectItem>
+            ))}
+          </MultiSelect>
+          </div>
+
+          
+          <Table className="h-full w-full">
+            <TableHead>
+              <TableRow>
+                <TableHeaderCell>Nome Usuario</TableHeaderCell>
+                <TableHeaderCell>Email</TableHeaderCell>
+                <TableHeaderCell>Estado</TableHeaderCell>
+
+
+                <TableHeaderCell>Cargo</TableHeaderCell>
+                <TableHeaderCell>Ativação</TableHeaderCell>
+              </TableRow>
+            </TableHead>
+            <TableBody className=''>
+              {users.filter((usuario) => isSelected(usuario)).map((usuario) => (
+                <TableRow key={usuario.nome_usuario}>
+                  <TableCell>{usuario.nome_usuario}</TableCell>
+                  <TableCell>
+                    <Text>{usuario.email}</Text>
+                  </TableCell>
+
+
+                  <TableCell>
+                    <Badge color="emerald" icon={StatusOnlineIcon}>
+                      {usuario.estado}
+                    </Badge>
+                  </TableCell>
+
+                  <TableCell>
+                    <Button className={"py-2 px-4 border rounded-md text-white bg-blue-600"}
+                      onClick={() => handleToggleUserAdm(usuario.id, usuario.cargo)}>
+
+                      {usuario.cargo === 'user' ? 'adm' : 'user'}
+
+                    </Button>
+                  </TableCell>
+                  <TableCell>
+                    <Button onClick={() => handleToggleUser(usuario.id, usuario.estado)} className="inline-flex text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover-bg-indigo-600 rounded text-lg">
+                      {usuario.estado === 'ativo' ? 'Desativar' : 'Ativar'}
+                    </Button>
+                  </TableCell>
+
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Card>
+
+
+
+
 
 
       </div>

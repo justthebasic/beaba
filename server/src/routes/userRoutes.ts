@@ -11,6 +11,6 @@ router.patch('/api/users/:userId/accept', UserController.acceptUser);
 router.patch('/api/users/:userId/ativar', UserController.ativarUser);
 router.patch('/api/users/:userId/desativar', UserController.desativarUser);
 router.patch('/api/users/:userId/cargoUser', UserController.cargoUser);
-router.patch('/api/users/:userId/cargoAdm', UserController.cargoUser);
+router.patch('/api/users/:userId/cargoAdm', UserController.cargoAdm);
 
 export default router;

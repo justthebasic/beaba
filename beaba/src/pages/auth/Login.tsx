@@ -13,19 +13,25 @@ export const Login = () => {
 
   const setIsUserValid = useBearStore((state) => state.setUserValid)
   const user = useUserStore((state) => state.user?.payload);
+  const { getDecodedToken, setUser } = useUserStore();
 
-  
-  const handleLogin = (e: FormEvent) => {
+
+
+  async function handleLogin(e: FormEvent) {
     e.preventDefault();
 
-    api.post('api/login', {
+    await api.post('api/login', {
       email,
       senha
     }).then((response) => {
 
       const token = response.data.token;
+      console.log(token)
       localStorage.setItem('accessToken', token);
+      const decodedToken = getDecodedToken();
+      setUser(decodedToken);
       setIsUserValid(true)
+
 
       console.log(token)
       if (user) {
@@ -43,7 +49,7 @@ export const Login = () => {
       } else {
         console.log('Usuário não autenticado');
       }
-      
+
     }).catch(() => {
       alert('Erro no login! Verifique suas credenciais.')
     })

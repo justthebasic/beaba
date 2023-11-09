@@ -9,12 +9,34 @@ import axios from "axios";
 
 
 export default class TemplateController {
-    static authenticateGoogleDrive(arg0: string, authenticateGoogleDrive: any) {
-        throw new Error("Method not implemented.");
-    }
+
     static async listTemplate(req: Request, res: Response) {
         try {
-            const templates = await prisma.template.findMany();
+            const templates = await prisma.template.findMany({
+                include: {
+                    campos: {
+                        select: {
+                            nome_campo: true,
+                        },
+                    },
+                    usuario:{
+                        select:{
+                            id:true
+                        }
+                    }
+                }
+            });
+
+            templates.forEach((template) => {
+                const nomeDoTemplate = template.nome_template;
+                const campos = template.campos; // Array de objetos
+                const numeroDeCampos = campos.length; // Conta o número de campos
+
+                console.log(`Nome do template: ${nomeDoTemplate}`);
+                console.log(`Nome do campos: ${campos}`);
+                console.log(`Número de campos: ${numeroDeCampos}`);
+            });
+
             res.json(templates);
         } catch (error) {
             console.error(error);
@@ -25,7 +47,7 @@ export default class TemplateController {
     static async connecFastapi(req: Request, res: Response) {
         try {
             const { templateId, formato } = req.params;
-           
+
 
             const template = await prisma.template.findUnique({
                 where: { id: parseInt(templateId) },
@@ -35,8 +57,8 @@ export default class TemplateController {
                 id: template.id,
                 name: template.nome_template,
                 formato: template.formato,
-                
-                
+
+
                 // Adicione outras propriedades do template aqui
             };
 
@@ -47,20 +69,6 @@ export default class TemplateController {
         }
     }
 
-    static async downloadExcel(req: Request, res: Response) {
-        
-        try {
-            
-            const response = await axios.get(`http://127.0.0.1:8000/download-excel`);
-
-            res.json(response.data);
-            
-            // return res.json(template_data);
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({ error: 'Erro ao baixar o template' });
-        }
-    }
 
 
     static async createTemplate(req: Request, res: Response) {

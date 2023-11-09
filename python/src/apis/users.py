@@ -12,10 +12,6 @@ router = APIRouter()
 @router.get("/users/", tags=["users"])
 async def read_users():
     users = await prisma.usuario.find_many()
-    print("users", users)
-
-    for user in users:
-        del user.senha
 
     return users
 
