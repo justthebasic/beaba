@@ -1,5 +1,5 @@
 
-import { NavbarUser } from '../../components/navbar/NavbarUser'
+import { SidebarUser } from '../../components/sidebar/SidebarUser'
 import { TableArquivosUser } from '../../components/tableUser/TableArquivosUser'
 
 export const ArquivosUser = () => {
@@ -7,7 +7,7 @@ export const ArquivosUser = () => {
     <>
       <div className='flex h-screen font-sans '>
         <div className='fixed h-screen  bg-gray-800'>
-          <NavbarUser />
+          <SidebarUser />
           </div>
         <div className='flex-auto ml-64 p-4 '>
 

@@ -15,21 +15,35 @@ import api from "../../services/api";
 
 export const ChartBarUploads = () => {
   const [uploads, setUploads] = useState([]);
-  const [numAprovacoes, setNumAprovacoes] = useState(0);
-  const [numReprovacoes, setNumReprovacoes] = useState(0);
+  const [userUploads, setUserUploads] = useState([]);
 
   useEffect(() => {
     // Recuperar a lista de arquivos do servidor
-    apiFastApi.get('apis/arquivos', {})
+    apiFastApi.get('apis/templates', {})
       .then((response) => {
         setUploads(response.data);
 
-        // Conte o número de aprovações e reprovações
-        const aprovacoes = response.data.filter(file => file.estado === true);
-        const reprovacoes = response.data.filter(file => file.estado === false);
+        // Conte o número de uploads por usuário
+        const userUploadCounts = {};
+        response.data.forEach((file: { usuario: { nome_usuario: string; }; }) => {
+          const nomeUsuario = file.usuario.nome_usuario;
+          if (userUploadCounts[nomeUsuario]) {
+            userUploadCounts[nomeUsuario]++;
+          } else {
+            userUploadCounts[nomeUsuario] = 1;
+          }
+        });
 
-        setNumAprovacoes(aprovacoes.length);
-        setNumReprovacoes(reprovacoes.length);
+        // Converta o objeto em uma lista
+        const userUploadList = Object.entries(userUploadCounts).map(([name, uploads]) => ({
+          name,
+          "Número de templates": uploads,
+        }));
+
+        // Ordene a lista com base no número de uploads em ordem decrescente
+        userUploadList.sort((a, b) => b["Número de templates"] - a["Número de templates"]);
+
+        setUserUploads(userUploadList);
       })
       .catch((error) => {
         console.error('Erro ao obter lista de arquivos', error);
@@ -39,24 +53,15 @@ export const ChartBarUploads = () => {
   return (
     <>
       <Card>
-        <Title>Quantidade de aprovações e reprovações uploads</Title>
-        <Subtitle>Quantidade de aprovações e reprovações</Subtitle>
+        <Title>Ranking Cadastradores </Title>
+        <Subtitle>Quem mais fez cadastro de template</Subtitle>
 
         <BarChart
           className="mt-6"
-          data={[
-            {
-              name: "Aprovado",
-              "Número de aprovações": numAprovacoes,
-            },
-            {
-              name: "Reprovado",
-              "Número de reprovações": numReprovacoes,
-            }
-          ]}
+          data={userUploads}
           index="name"
-          categories={["Número de aprovações", "Número de reprovações"]}
-          colors={["blue", "red"]}
+          categories={["Número de templates"]}
+          colors={["blue"]}
           yAxisWidth={48}
         />
       </Card>
@@ -77,7 +82,7 @@ export const ChartBarMaiorUploads = () => {
 
         // Conte o número de uploads por usuário
         const userUploadCounts = {};
-        response.data.forEach((file) => {
+        response.data.forEach((file: { usuario: { nome_usuario: string; }; }) => {
           const nomeUsuario = file.usuario.nome_usuario;
           if (userUploadCounts[nomeUsuario]) {
             userUploadCounts[nomeUsuario]++;
@@ -162,7 +167,7 @@ export const ChartBarRanking = () => {
     <>
       <Card>
         <Title>Ranking formatos </Title>
-        <Subtitle>Formatos templates mais usados pelos usuários</Subtitle>
+        <Subtitle>Formatos de templates mais usados pelos usuários</Subtitle>
 
         <BarChart
           className="mt-6"
@@ -228,7 +233,7 @@ export const ChartBarEstados = () => {
           index="name"
           categories={["Número de templates ativos", "Número de templates inativos","Número de templates pendentes" ]}
           colors={["blue", "red"]}
-          yAxisWidth={48}
+          
         />
       </Card>
     </>

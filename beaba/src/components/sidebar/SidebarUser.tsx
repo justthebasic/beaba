@@ -1,6 +1,5 @@
 import { Link, useLocation } from 'react-router-dom'
-import { DropDown } from '../DropDown';
-import { useBearStore, useUserStore } from '../../state/state';
+import { useUserStore } from '../../state/state';
 // import { useEffect, useState } from 'react';
 // import jwt from 'jsonwebtoken';
 
@@ -8,10 +7,12 @@ import { useBearStore, useUserStore } from '../../state/state';
 
 
 
-export const NavbarUser = () => {
+export const SidebarUser = () => {
+
+
     const location = useLocation();
     const user = useUserStore((state) => state.user?.payload);
-    const setIsUserValid = useBearStore((state) => state.setUserValid)
+    const setIsUserValid = useUserStore((state) => state.setUserValid)
 
     const { logout } = useUserStore();
 
@@ -19,14 +20,13 @@ export const NavbarUser = () => {
     const handleLogout = () => {
         localStorage.removeItem('accessToken');
         setIsUserValid(false);
-        logout(null);
+        logout();
 
     };
 
-
     return (
         <>
-            <div className="flex flex-wrap bg-white h-full">
+            <div className="flex fixed bg-white h-full">
                 <div className="w-60 bg-green-600 rounded p-3 shadow-lg flex-col justify-center">
                     <div className='w-full mb-6 text-center items-center justify-center'>
                         <Link to={'/dashboarduser'}>
@@ -34,7 +34,9 @@ export const NavbarUser = () => {
                         </Link>
                     </div>
                     <div className="flex items-center space-x-4 p-2 mb-5">
-                        <img className="h-10 rounded-full" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSngDLxVdX-4fhpWyG8hDPxUWyGV1B9uOXJ3Q&usqp=CAU" alt="avatar" />
+                        <div className="relative w-10 h-10 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-100">
+                            <svg className="absolute w-12 h-12 text-gray-400 -left-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
+                        </div>
                         <div className='flex'>
                             <h4 className="font-semibold text-xl text-white capitalize font-poppins tracking-wide pr-6">
                                 {user && (
@@ -57,25 +59,23 @@ export const NavbarUser = () => {
                                 ${location.pathname === '/dashboarduser' ? 'bg-green-500' : ''}`}>
                                 <span className="text-gray-600">
                                     <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        {/* <!-- Adicione o ícone apropriado aqui --> */}
+                                        
                                     </svg>
                                 </span>
                                 <span>Dashboard</span>
                             </Link>
                         </li>
                         <li>
-                            <Link to={""}
+                            <Link to={"/templatesdisponiveisuser"}
                                 className={`flex items-center space-x-3 text-white p-2 rounded-md font-medium hover:bg-green-500 focus:bg-green-500 focus:shadow-outline 
-                            ${location.pathname === '' ? 'bg-green-500' : ''}`}>
+                            ${location.pathname === '/templatesdisponiveisuser' ? 'bg-green-500' : ''}`}>
                                 <span className="text-gray-600">
                                     <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        {/* <!-- Adicione o ícone apropriado aqui --> */}
+                                        
                                     </svg>
                                 </span>
-                                <span><DropDown /></span>
-
+                                <span>Templates</span>
                             </Link>
-
                         </li>
                         <li>
                             <Link to={"/uploaduser"}
@@ -83,7 +83,7 @@ export const NavbarUser = () => {
                             ${location.pathname === '/uploaduser' ? 'bg-green-500' : ''}`}>
                                 <span className="text-gray-600">
                                     <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        {/* <!-- Adicione o ícone apropriado aqui --> */}
+                                        
                                     </svg>
                                 </span>
                                 <span>Upload</span>
@@ -95,7 +95,7 @@ export const NavbarUser = () => {
                             ${location.pathname === '/arquivosuser' ? 'bg-green-500' : ''}`}>
                                 <span className="text-gray-600">
                                     <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        {/* <!-- Adicione o ícone apropriado aqui --> */}
+                                        
                                     </svg>
                                 </span>
                                 <span>Arquivos</span>

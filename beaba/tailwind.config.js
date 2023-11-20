@@ -7,7 +7,7 @@ export const content = [
 ];
 export const theme = {
   transparent: "transparent",
-  current: "currentColor",
+  current: "tremor",
   extend: {
     colors: {
       // light mode
@@ -41,35 +41,35 @@ export const theme = {
         },
       },
       // dark mode
-      "dark-tremor": {
-        brand: {
-          faint: "#0B1229",
-          muted: "#172554",
-          subtle: "#1e40af",
-          DEFAULT: "#3b82f6",
-          emphasis: "#60a5fa",
-          inverted: "#030712", // gray-950
-        },
-        background: {
-          muted: "#131A2B",
-          subtle: "#1f2937",
-          DEFAULT: "#111827",
-          emphasis: "#d1d5db", // gray-300
-        },
-        border: {
-          DEFAULT: "#1f2937", // gray-800
-        },
-        ring: {
-          DEFAULT: "#1f2937", // gray-800
-        },
-        content: {
-          subtle: "#4b5563",
-          DEFAULT: "#6b7280",
-          emphasis: "#e5e7eb",
-          strong: "#f9fafb",
-          inverted: "#000000", // black
-        },
-      },
+      // "dark-tremor": {
+      //   brand: {
+      //     faint: "#0B1229",
+      //     muted: "#172554",
+      //     subtle: "#1e40af",
+      //     DEFAULT: "#3b82f6",
+      //     emphasis: "#60a5fa",
+      //     inverted: "#030712", // gray-950
+      //   },
+      //   background: {
+      //     muted: "#131A2B",
+      //     subtle: "#1f2937",
+      //     DEFAULT: "#111827",
+      //     emphasis: "#d1d5db", // gray-300
+      //   },
+      //   border: {
+      //     DEFAULT: "#1f2937", // gray-800
+      //   },
+      //   ring: {
+      //     DEFAULT: "#1f2937", // gray-800
+      //   },
+      //   content: {
+      //     subtle: "#4b5563",
+      //     DEFAULT: "#6b7280",
+      //     emphasis: "#e5e7eb",
+      //     strong: "#f9fafb",
+      //     inverted: "#000000", // black
+      //   },
+      // },
     },
     boxShadow: {
       // light

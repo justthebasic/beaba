@@ -16,16 +16,18 @@ import {
     TableHeaderCell,
     TableRow,
     Text,
-    
+
 } from "@tremor/react";
 import Modal from '../modal/Modal';
 import { useUserStore } from '../../state/state';
+import ModalCadastroTemplate from '../modal/ModalCadastroTemplate';
+import { TemplateType } from '../types';
 
 
 
 export const TemplateListUser = () => {
     const [templates, setTemplates] = useState([]);
-    const [selectedTemplate, setSelectedTemplate] = useState<string>('');
+    const [selectedTemplate, setSelectedTemplate] = useState<Array<string>>([]);
     const user = useUserStore((state) => state.user);
 
 
@@ -63,20 +65,23 @@ export const TemplateListUser = () => {
         }
     }
 
+
+
     // const activeTemplates = templates.filter(template => template.estado === 'ativo' );
-    const isUsuario = templates.filter(template => template.usuario.id === user.payload.userId && template.estado === 'ativo' )
+    const isUsuario = templates.filter(template => template.usuario.id === user.payload.userId && template.estado === 'ativo')
+    console.log(isUsuario)
+    const total = isUsuario.length;
+    console.log(total)
     // console.log(usuario)
-    const isSelected = (template) => {
+    const isSelected = (template: TemplateType) => {
         const isSelectedTemplate = selectedTemplate.includes(template.nome_template) || selectedTemplate.length === 0;
         // const isUsuario = selectedTemplate.includes(template.usuario.id) || selectedTemplate.length === 0;
-
-
-        return isSelectedTemplate 
+        return isSelectedTemplate
     }
     return (
         <>
 
-<div className='flex-col h-auto mt-10'>
+            <div className='flex-col h-auto mt-10'>
                 <Card>
                     <div className='flex gap-6'>
                         <MultiSelect
@@ -84,13 +89,16 @@ export const TemplateListUser = () => {
                             placeholder="Selecionar Template"
                             className="max-w-xs mb-6"
                         >
-                            {templates.map((template) => (
+                            {templates.map((template: TemplateType) => (
                                 <MultiSelectItem key={template.nome_template} value={template.nome_template}>
                                     {template.nome_template}
                                 </MultiSelectItem>
                             ))}
                         </MultiSelect>
-                        
+                        <div className=''>
+
+                            <ModalCadastroTemplate />
+                        </div>
                     </div>
 
 
@@ -100,19 +108,19 @@ export const TemplateListUser = () => {
                                 <TableHeaderCell>Nome template</TableHeaderCell>
                                 <TableHeaderCell>Formato</TableHeaderCell>
                                 <TableHeaderCell>Status</TableHeaderCell>
-                                
+
 
                                 <TableHeaderCell>Visualizar</TableHeaderCell>
                                 <TableHeaderCell>Baixar</TableHeaderCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {isUsuario.filter((template) => isSelected(template)).map((template) => (
+                            {isUsuario.filter((template) => isSelected(template)).map((template: TemplateType) => (
                                 <TableRow key={template.nome_template}>
                                     <TableCell>{template.nome_template}</TableCell>
                                     <TableCell>
                                         <Text>{template.formato}</Text>
-                                        
+
                                     </TableCell>
 
 
@@ -121,10 +129,18 @@ export const TemplateListUser = () => {
                                             {template.estado}
                                         </Badge>
                                     </TableCell>
-                                    
+
                                     <TableCell>
 
-                                        <Modal />
+                                        <Modal>
+                                            <h1>
+                                                {template.campos.map((campo) => (
+                                                    <div key={campo.id}>
+                                                        {campo.nome_campo}
+                                                    </div>
+                                                ))}
+                                            </h1>
+                                        </Modal>
 
                                     </TableCell>
                                     <TableCell>

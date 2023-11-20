@@ -92,7 +92,7 @@ export const TemplatesTotal = () => {
     <>
       <div>
         
-        <Title >Total de templates: {totalTemplates}</Title>
+        <Title >Total de templates: <span className="">{totalTemplates}</span></Title>
       </div>
 
       

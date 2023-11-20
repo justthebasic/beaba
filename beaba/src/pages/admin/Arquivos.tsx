@@ -1,5 +1,5 @@
-import { Card } from '@tremor/react'
-import { Navbar } from '../../components/navbar/Navbar'
+
+import { Sidebar } from '../../components/sidebar/Sidebar'
 import { TableArquivos } from '../../components/table/TableArquivos'
 
 export const Arquivos = () => {
@@ -7,7 +7,7 @@ export const Arquivos = () => {
     <>
       <div className='flex h-screen font-sans '>
         <div className='fixed h-screen  bg-gray-800'>
-          <Navbar />
+          <Sidebar />
         </div>
         <div className='flex-auto ml-64 p-4 '>
 

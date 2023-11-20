@@ -42,7 +42,7 @@ export const DropDown = () => {
                                                 <span>Cadastro Template</span>
                                             </Link>
                                         </li>
-                                        
+
                                         <li>
                                             <Link to={"/templatesdisponiveisuser"}
                                                 className={`flex items-center space-x-3 text-white p-2 rounded-md font-medium hover:bg-green-500 focus:bg-green-500 focus:shadow-outline 
@@ -91,7 +91,7 @@ export const DropDown = () => {
                                                 <span>Cadastro Template</span>
                                             </Link>
                                         </li>
-                                       
+
                                         <li>
                                             <Link to={"/templatesdisponiveis"}
                                                 className={`flex items-center space-x-3 text-white p-2 rounded-md font-medium hover:bg-green-500 focus:bg-green-500 focus:shadow-outline 

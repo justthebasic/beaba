@@ -1,4 +1,4 @@
-import { Navbar } from '../../components/navbar/Navbar'
+import { Sidebar } from '../../components/sidebar/Sidebar'
 import {
   Card,
   Grid,
@@ -23,7 +23,7 @@ import { TableArquivos } from '../../components/table/TableArquivos';
 
 export const Dashboard = () => {
 
-  const [templates, setTemplates] = useState([]);
+  const [, setTemplates] = useState([]);
 
   useEffect(() => {
     // Recuperar a lista de templates do servidor
@@ -44,7 +44,7 @@ export const Dashboard = () => {
       <div className='flex h-screen font-sans'>
         <div className='fixed h-screen '>
 
-          <Navbar />
+          <Sidebar />
         </div>
 
         <main className=" flex-auto ml-64 p-4  ">
@@ -87,12 +87,12 @@ export const Dashboard = () => {
                 <Grid numItemsMd={2} numItemsLg={3} className="gap-6 mt-6">
                   <Card>
 
-                    <ChartBarUploads />
+                    <ChartBarMaiorUploads />
                     <div className="h-30" />
                   </Card>
                   <Card>
-                    <ChartBarMaiorUploads />
 
+                    <ChartBarUploads />
                     <div className="h-30" />
                   </Card>
                   <Card>
@@ -106,7 +106,7 @@ export const Dashboard = () => {
 
               {/* detail */}
               <TabPanel>
-                <Grid numItemsMd={3} numItemsLg={1}  className="gap-6 mt-6">
+                <Grid numItemsMd={3} numItemsLg={1} className="gap-6 mt-6">
 
                   <div className="mt-6 ">
                     <Card >
@@ -121,9 +121,6 @@ export const Dashboard = () => {
                       </div>
                     </Card>
 
-                    
-
-                    
                   </div>
 
                 </Grid>

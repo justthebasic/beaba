@@ -1,5 +1,5 @@
 // import { TableArquivos } from '../components/table/Table'
-import { NavbarUser } from '../../components/navbar/NavbarUser'
+import { SidebarUser } from '../../components/sidebar/SidebarUser'
 import { TemplateListUser } from '../../components/tableUser/TemplateListUser'
 
 
@@ -8,7 +8,7 @@ export const TemplatesDisponiveisUser = () => {
     <>
       <div className='flex h-screen font-sans '>
         <div className='fixed h-screen'>
-          <NavbarUser />
+          <SidebarUser />
 
         </div>
 

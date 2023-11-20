@@ -1,7 +1,13 @@
 import React, { FormEvent, useState } from 'react'
+
 import { Link, useNavigate } from 'react-router-dom'
 import api from '../../services/api'
 import { InputForm } from '../../components/input/InputForm'
+import toast from 'react-hot-toast'
+
+
+
+
 
 export const Registro = () => {
   const navigate = useNavigate()
@@ -10,20 +16,24 @@ export const Registro = () => {
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
 
-  const handleCreateUser = (e: FormEvent) => {
-    e.preventDefault()
-
-    api.post('api/register', {
-      nome_usuario,
-      email,
-      senha
-    }).then(() => {
-      alert('Cadastro realizado com sucesso')
-
-      navigate('/login')
-    }).catch(() => {
-      alert('Erro no cadastro!')
-    })
+  const handleCreateUser = async (e: FormEvent) => {
+    e.preventDefault();
+    try {
+      const response = await api.post('api/register', {
+        nome_usuario,
+        email,
+        senha
+      })
+      if (response.status === 200) {
+        toast.success("Cadastro realizado com sucesso");
+        navigate('/login')
+      } else {
+        toast.error('Erro no cadastro. Verifique os dados e tente novamente.')
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error('Erro no cadastro!')
+    }
   }
 
 
@@ -83,7 +93,7 @@ export const Registro = () => {
 
 
                 <button type="submit" className="bg-green-600 text-white font-bold text-lg hover:bg-green-700 p-2 mt-4">
-                    Cadastrar
+                  Cadastrar
                 </button>
 
               </form>

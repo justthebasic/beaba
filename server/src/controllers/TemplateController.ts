@@ -17,6 +17,7 @@ export default class TemplateController {
                     campos: {
                         select: {
                             nome_campo: true,
+                            tipo: true,
                         },
                     },
                     usuario:{
@@ -43,33 +44,23 @@ export default class TemplateController {
             res.status(500).json({ error: 'Erro ao listar templates' });
         }
     }
+    static async findTempalte(req:Request, res: Response){
+        const {templateId} = req.params
 
-    static async connecFastapi(req: Request, res: Response) {
-        try {
-            const { templateId, formato } = req.params;
-
-
-            const template = await prisma.template.findUnique({
+        try{
+            const templates = await prisma.template.findUnique({
                 where: { id: parseInt(templateId) },
+                include: { campos: true }, // Inclua campos e arquivos relacionados ao template
             });
 
-            const template_data = {
-                id: template.id,
-                name: template.nome_template,
-                formato: template.formato,
 
+            res.json(templates);
 
-                // Adicione outras propriedades do template aqui
-            };
-
-            return res.json(template_data);
-        } catch (error) {
-            console.error(error)
-            res.status(500).send('Erro ao chamar o servidor fastapi.')
+        }catch(error){
+            console.error(error);
         }
     }
-
-
+    
 
     static async createTemplate(req: Request, res: Response) {
         const { nome_template, formato, campos, id } = req.body;
@@ -110,6 +101,48 @@ export default class TemplateController {
             res.status(500).json({ error: 'Erro ao criar o template e campos associados' });
         }
     }
+
+
+    static async deleteTemplate(req: Request, res: Response){
+        const {templateId} = req.params;
+        try{
+        // Verificar se o template existe antes de tentar excluí-lo
+        const existingTemplate = await prisma.template.findUnique({
+            where: { id: parseInt(templateId) },
+            include: { campos: true, arquivo: true }, // Inclua campos e arquivos relacionados ao template
+        });
+
+        if (!existingTemplate) {
+            return res.status(404).json({ error: 'Template não encontrado' });
+        }
+
+        // Verificar se o template está vinculado a algum arquivo
+        if (existingTemplate.arquivo.length > 0) {
+            return res.status(400).json({ error: 'Não é possível excluir o template vinculado a arquivos' });
+        }
+
+        
+        
+        // Iniciar uma transação para garantir operações atômicas
+        await prisma.$transaction(async (prisma) => {
+            // Excluir os campos relacionados ao template
+            await prisma.campo.deleteMany({
+                where: { template_id: existingTemplate.id },
+            });
+
+            // Excluir o template
+            const deletedTemplate = await prisma.template.delete({
+                where: { id: parseInt(templateId) },
+            });
+
+            res.json(deletedTemplate);
+        });
+        }catch (error) {
+            console.error(error)
+            res.status(500).json({ error: 'Erro ao deletar o template' });
+        }
+    }
+
 
 
     static async acceptTemplate(req: Request, res: Response) {

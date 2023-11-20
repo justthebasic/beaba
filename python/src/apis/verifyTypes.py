@@ -5,19 +5,14 @@ import pandas as pd
 from pydantic import BaseModel
 from src.prisma import prisma
 from typing import List
-
+from pathlib import Path
 import logging
 
 
 router = APIRouter()
 
-# Caminho para a pasta de uploads
-UPLOADS_DIR = "uploads"  # Certifique-se de criar essa pasta no diretório raiz do projeto
 
-# @router.get("/arquivos/", tags=["arquivos"])
-# async def get_arquivos():
-#     arquivos = await prisma.arquivo.find_many()
-#     return arquivos
+UPLOADS_DIR = "uploads"  
 
 class Usuario(BaseModel):
     nome_usuario: str
@@ -37,10 +32,9 @@ class ArquivoResponse(BaseModel):
 
     
    
-
 @router.get("/arquivos", tags=["arquivo"])
 async def list_arquivos():
-    arquivos = await prisma.arquivo.find_many()
+    arquivos = await prisma.arquivo.find_many(include={'usuario':True})
     
     return arquivos
 
@@ -59,12 +53,11 @@ async def list_arquivos():
 #     }
 
 
-
 def read_uploaded_file(file_path):
     if file_path.endswith('.csv'):
         df = pd.read_csv(file_path, sep=',', header=1)
     elif file_path.endswith(('.xls', '.xlsx')):
-        df = pd.read_excel(file_path, header=0,skiprows=1)
+        df = pd.read_excel(file_path)
     else:
         raise Exception("Tipo de arquivo não suportado")
     return df
@@ -78,12 +71,11 @@ type_mapping = {
     # Add more mappings as needed
 }
 
-# Função para validar o arquivo em relação ao template
 async def validar_arquivo(file_path, template_id):
     try:
         df = read_uploaded_file(file_path)
     except Exception as e:
-        os.remove(file_path)  # Remova o arquivo em caso de erro
+        os.remove(file_path)  
         raise HTTPException(status_code=400, detail="Erro ao ler o arquivo. Verifique o formato.")
 
     template = await prisma.template.find_unique(
@@ -99,6 +91,7 @@ async def validar_arquivo(file_path, template_id):
         col_dtype = df[col_name].dtype
         expected_dtype = type_mapping[campo_tipos[campo_names.index(col_name)]]
         if col_dtype != expected_dtype:
+            os.remove(file_path)
             raise ValueError(f"O tipo de dados da coluna '{col_name}' não corresponde ao tipo esperado.")
             
 
@@ -106,14 +99,9 @@ async def validar_arquivo(file_path, template_id):
 
 
 
-
-
-# Rota para criar um arquivo
 async def create_arquivo( nome_arquivo: str, file_path: str, estado: bool, template_id: int, usuario_id: int):
     try:
         
-        
-        # Crie o arquivo no banco de dados usando o modelo Prisma
         new_arquivo = await prisma.arquivo.create({
             "nome_arquivo":nome_arquivo,
             "caminho_arquivo":file_path,
@@ -123,7 +111,7 @@ async def create_arquivo( nome_arquivo: str, file_path: str, estado: bool, templ
         }
         )
 
-        return new_arquivo # Ou retorne a resposta adequada
+        return new_arquivo 
     except Exception as error:
         logger.error(f"Error creating arquivo: {error}")
 
@@ -131,22 +119,74 @@ async def create_arquivo( nome_arquivo: str, file_path: str, estado: bool, templ
 
 
 @router.post("/uploadfile/")
-async def upload_file(file: UploadFile, nome_arquivo: str = Form(...), estado: bool = Form(default=False), template_id: int = Form(...), usuario_id: int = Form(...)):
-    file_path = os.path.join(UPLOADS_DIR, file.filename)
+async def upload_file(
+    file: UploadFile, 
+    nome_arquivo: str = Form(...), 
+    estado: bool = Form(default=False), 
+    template_id: int = Form(...), 
+    usuario_id: int = Form(...),
+    folder: str = Form(...)
+    ):
+
     
-    with open(file_path, "wb") as f:
-        f.write(file.file.read())
+    folder_path = os.path.join(UPLOADS_DIR, folder)
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+
+
+    base_file_path = os.path.join(folder_path ,file.filename)
+    file_path = base_file_path
+
+    count = 1
+
+    while os.path.exists(file_path):
+        base_name, file_extension = os.path.splitext(file_path)
+        file_path = f"{base_name}_{count}{file_extension}"
+        count += 1
+
+
 
     try:
-
+        with open(file_path, "wb") as f:
+            f.write(file.file.read())
         arquivo_df = await validar_arquivo(file_path, template_id)
         arquivo = await create_arquivo(nome_arquivo, file_path, True, template_id, usuario_id)
 
         return {"filename": file.filename, "arquivo_id": arquivo.id}
     except HTTPException as e:
-        # Trate os erros de validação e retorne uma resposta de erro adequada
-        os.remove(file_path)  # Remova o arquivo em caso de erro
-        return e
+        # Se a validação falhar, remova o arquivo e retorne a exceção
+        os.remove(file_path)
+        raise e
+    except Exception as e:
+        # Em caso de qualquer outra exceção, remova o arquivo e retorne uma exceção 500
+        os.remove(file_path)
+        raise HTTPException(status_code=500, detail=f"Erro inesperado: {str(e)}")
+
+
+@router.get("/arquivo/{arquivo_id}")
+async def get_arquivo_by_id(arquivo_id: int):
+    arquivo = await prisma.arquivo.find_unique(where={"id": arquivo_id})
+    return arquivo
+
+
+async def delete_arquivo(arquivo_id: int):
+    await prisma.arquivo.delete(where={"id": arquivo_id})
+
+
+@router.delete("/deletefile/{arquivo_id}")
+async def delete_file(arquivo_id: int):
+    arquivo = await prisma.arquivo.find_unique(where={"id": arquivo_id})
+    if arquivo is None:
+        raise HTTPException(status_code=404, detail="Arquivo não encontrado")
+
+    try:
+        os.remove(arquivo.caminho_arquivo)
+        await prisma.arquivo.delete(where={"id": arquivo_id})
+        return {"message": "Arquivo excluído com sucesso"}
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro ao excluir o arquivo: {str(e)}")
+
 
 
 @router.get("/downloadfile/{filename:path}")
@@ -157,6 +197,8 @@ async def download_file(filename: str):
         raise HTTPException(status_code=404, detail="Arquivo não encontrado")
 
     return FileResponse(file_path, filename=filename)
+
+
 
 # @router.get("/downloadfile/{filename}")
 # async def download_file(filename: str):

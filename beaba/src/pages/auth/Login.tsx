@@ -2,7 +2,9 @@ import { FormEvent, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import api from '../../services/api'
 import { InputForm } from '../../components/input/InputForm'
-import { useBearStore, useUserStore } from '../../state/state'
+import { useUserStore } from '../../state/state'
+import toast, { Toaster } from 'react-hot-toast'
+
 
 
 export const Login = () => {
@@ -11,7 +13,7 @@ export const Login = () => {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
 
-  const setIsUserValid = useBearStore((state) => state.setUserValid)
+  const setIsUserValid = useUserStore((state) => state.setUserValid)
   const user = useUserStore((state) => state.user?.payload);
   const { getDecodedToken, setUser } = useUserStore();
 
@@ -26,32 +28,36 @@ export const Login = () => {
     }).then((response) => {
 
       const token = response.data.token;
-      console.log(token)
+      
       localStorage.setItem('accessToken', token);
       const decodedToken = getDecodedToken();
       setUser(decodedToken);
+
+      localStorage.setItem('isUserValid', 'true')
       setIsUserValid(true)
 
 
       console.log(token)
       if (user) {
         if (user.userCargo === 'adm' && user.userEstado === 'ativo') {
+          toast.success('Login administrador realizado com sucesso!')
           navigate('/dashboard');
         } else if (user.userCargo === 'user' && user.userEstado === 'ativo') {
+          toast.success('Login usúario realizado com sucesso!')
           navigate('/dashboarduser');
         } else if (user.userCargo === 'adm' && user.userEstado !== 'ativo') {
-          console.log('Usuário adm inativo');
+          toast.error('Adm inativo')
         } else if (user.userCargo === 'user' && (user.userEstado === 'pendente' || user.userEstado !== 'ativo')) {
-          console.log('Usuário user pendente ou inativo');
+          toast.error('Usuário pendente ou inativo')
         } else {
-          console.log('Usuário com tipo desconhecido');
+          // console.log('Usuário com tipo desconhecido');
+          toast.error('Usuário com tipo desconhecido')
         }
-      } else {
-        console.log('Usuário não autenticado');
-      }
+      } 
 
     }).catch(() => {
-      alert('Erro no login! Verifique suas credenciais.')
+      // alert('Erro no login! Verifique suas credenciais.')
+      toast.error('Erro no login! Verifique suas credenciais.')
     })
   }
 
@@ -108,6 +114,7 @@ export const Login = () => {
                 <button type="submit" className=" bg-green-600 text-white font-bold text-lg hover:bg-green-700 p-2 mt-4 ">
                   Entrar
                 </button>
+                <Toaster />
 
               </form>
 

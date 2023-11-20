@@ -5,15 +5,14 @@ import './index.css'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { Login } from './pages/auth/Login'
 import { Registro } from './pages/auth/Registro'
-import { AprovarTemplate } from './pages/admin/AprovarTemplate'
 import { Arquivos } from './pages/admin/Arquivos'
-import { CadastroTemplate } from './pages/admin/CadastroTemplate'
+
 import { Dashboard } from './pages/admin/Dashboard'
 import { TemplatesDisponiveis } from './pages/admin/TemplatesDisponiveis'
 import { Upload } from './pages/admin/Upload'
 import { Usuarios } from './pages/admin/Usuarios'
 import { DashboardUser } from './pages/user/DashboardUser'
-import { CadastroTemplateUser } from './pages/user/CadastroTemplateUser'
+
 import { TemplatesDisponiveisUser } from './pages/user/TemplatesDisponiveisUser'
 import { ArquivosUser } from './pages/user/ArquivosUser'
 import { UploadUser } from './pages/user/UploadUser'
@@ -32,9 +31,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           <Route path='Usuarios' element={<Usuarios />} />
           <Route path='Dashboard' element={<Dashboard />} />
           <Route path='DashboardUser' element={<DashboardUser />} />
-          <Route path='AprovarTemplate' element={<AprovarTemplate />} />
-          <Route path='CadastroTemplate' element={<CadastroTemplate />} />
-          <Route path='CadastroTemplateUser' element={<CadastroTemplateUser />} />
           <Route path='TemplatesDisponiveis' element={<TemplatesDisponiveis />} />
           <Route path='TemplatesDisponiveisUser' element={<TemplatesDisponiveisUser />} />
           <Route path='Arquivos' element={<Arquivos />} />

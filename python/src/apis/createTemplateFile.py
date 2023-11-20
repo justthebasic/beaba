@@ -11,54 +11,56 @@ import xlwt
 
 router = APIRouter()
 
-# Modelo Pydantic para entrada de dados (opcional)
+
 class Template(BaseModel):
     id: int
     name: str
     formato: str
 
-# Rota para obter todos os templates
+
 @router.get("/templates/", tags=["templates"])
 async def get_templates():
-    templates = await prisma.template.find_many()
+    templates = await prisma.template.find_many(
+        include={'usuario': True}
+    )
     return templates
 
-# Rota para obter um template por ID
+
 @router.get("/templates/{template_id}", tags=["templates"])
 async def get_template(template_id: int):
     template = await prisma.template.find_unique(where={"id": template_id}, include={"campos": True})
     return template
 
-# Função para buscar dados do banco 
+
 async def get_data_from_db(template_id: int):
     template = await prisma.template.find_unique(where={"id": template_id}, include={"campos": True})
 
-    # Extraia os nomes dos campos e tipos
+
     campos = template.campos
     campo_names = [campo.nome_campo for campo in campos]
-    # campo_tipos = [campo.tipo for campo in campos]
+    campo_tipos = [campo.tipo for campo in campos]
 
-    # Crie um DataFrame com base nos campos e tipos
+    # Cria um DataFrame com base nos campos e tipos
     data = {
         'Campos': campo_names,
-        # 'Tipos': campo_tipos,
+        'Tipos': campo_tipos,
     }
     df = pd.DataFrame(data)
 
-    # Transponha o DataFrame para inverter as colunas e as linhas
+    # DataFrame para inverter as colunas e as linhas
     df = df.T
     return df
 
-# Rota para baixar dados em formato Excel
+
 @router.get("/download-xlsx/{id}/{name}/{formato}", response_class=FileResponse)
 async def download_excel(id: int, name: str, formato: str):
-    # Substitua a chamada à função get_data_from_db pela lógica que você precisa
+    
     df = await get_data_from_db(id)
 
-    # Crie um arquivo Excel com os dados
+    
     output = BytesIO()
     with pd.ExcelWriter(output, engine='openpyxl') as writer:
-        df.to_excel(writer, index=False, sheet_name="Data")
+        df.to_excel(writer, index=False, header=0, sheet_name="Data")
 
     output.seek(0)
 
@@ -66,15 +68,15 @@ async def download_excel(id: int, name: str, formato: str):
 
 
 
-# Rota para baixar dados em formato CSV
+
 @router.get("/download-csv/{id}/{name}/{formato}", response_class=FileResponse)
 async def download_csv(id: int, name: str, formato: str):
-    # Substitua a chamada à função get_data_from_db pela lógica que você precisa
+    
     df = await get_data_from_db(id)
 
     # Crie um arquivo CSV
     output = BytesIO()
-    df.to_csv(output, index=False, encoding='utf-8', sep=';')
+    df.to_csv(output, index=False, header=0,encoding='utf-8', sep=';')
 
     output.seek(0)
 
@@ -84,7 +86,7 @@ async def download_csv(id: int, name: str, formato: str):
 
 @router.get("/download-xls/{id}/{name}/{formato}", response_class=FileResponse)
 async def download_xls(id: int, name: str, formato: str):
-    # Substitua a chamada à função get_data_from_db pela lógica que você precisa
+    
     df = await get_data_from_db(id)
 
     output = BytesIO()

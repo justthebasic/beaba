@@ -1,33 +1,26 @@
-import { Link, useLocation } from 'react-router-dom'
-import { DropDown } from '../DropDown';
-import { useBearStore, useUserStore } from '../../state/state';
+import { Link, useLocation } from 'react-router-dom';
+import { useUserStore } from '../../state/state';
 
 
 
 
 
 
-export const Navbar = () => {
+export const Sidebar = () => {
     const location = useLocation();
-    const setIsUserValid = useBearStore((state) => state.setUserValid)
+    const setIsUserValid = useUserStore((state) => state.setUserValid)
 
     const user = useUserStore((state) => state.user);
     const { logout } = useUserStore();
 
 
     const handleLogout = () => {
-        // Remover o token do localStorage
         localStorage.removeItem('accessToken');
-        // Invalidar o usuário no estado global
         setIsUserValid(false);
-        // Limpar as informações do usuário no estado global
-        logout(null);
-        
-        // Redirecionar para a página de login ou para a página inicial, se necessário
-        // Exemplo: navigate('/login');
-      };
+        logout();
+    };
 
-    
+
 
     return (
         <>
@@ -41,7 +34,9 @@ export const Navbar = () => {
                         </Link>
                     </div>
                     <div className="flex items-center space-x-4 p-2 mb-5">
-                        <img className="h-10 rounded-full" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSngDLxVdX-4fhpWyG8hDPxUWyGV1B9uOXJ3Q&usqp=CAU" alt="avatar" />
+                        <div className="relative w-10 h-10 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-100">
+                            <svg className="absolute w-12 h-12 text-gray-400 -left-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
+                        </div>
                         <div className='flex'>
                             <h4 className="font-semibold text-xl text-white capitalize font-poppins tracking-wide pr-6">{user && (
                                 <div>
@@ -63,7 +58,7 @@ export const Navbar = () => {
                                 ${location.pathname === '/dashboard' ? 'bg-green-500' : ''}`}>
                                 <span className="text-gray-600">
                                     <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        {/* <!-- Adicione o ícone apropriado aqui --> */}
+                                        
                                     </svg>
                                 </span>
                                 <span>Dashboard</span>
@@ -75,26 +70,24 @@ export const Navbar = () => {
                                     ${location.pathname === '/usuarios' ? 'bg-green-500' : ''}`}>
                                 <span className="text-gray-600">
                                     <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        {/* <!-- Adicione o ícone apropriado aqui --> */}
+                                        
                                     </svg>
                                 </span>
                                 <span>Usuários</span>
                             </Link>
                         </li>
-                        <li>
 
-                            <Link to={""}
+                        <li>
+                            <Link to={"/templatesdisponiveis"}
                                 className={`flex items-center space-x-3 text-white p-2 rounded-md font-medium hover:bg-green-500 focus:bg-green-500 focus:shadow-outline 
-                            ${location.pathname === '' ? 'bg-green-500' : ''}`}>
+                            ${location.pathname === '/templatesdisponiveis' ? 'bg-green-500' : ''}`}>
                                 <span className="text-gray-600">
                                     <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        {/* <!-- Adicione o ícone apropriado aqui --> */}
+                                        
                                     </svg>
                                 </span>
-                                <span><DropDown /></span>
-
+                                <span>Templates</span>
                             </Link>
-
                         </li>
                         <li>
                             <Link to={"/upload"}
@@ -102,7 +95,7 @@ export const Navbar = () => {
                             ${location.pathname === '/upload' ? 'bg-green-500' : ''}`}>
                                 <span className="text-gray-600">
                                     <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        {/* <!-- Adicione o ícone apropriado aqui --> */}
+                                        
                                     </svg>
                                 </span>
                                 <span>Upload</span>
@@ -114,7 +107,7 @@ export const Navbar = () => {
                             ${location.pathname === '/arquivos' ? 'bg-green-500' : ''}`}>
                                 <span className="text-gray-600">
                                     <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        {/* <!-- Adicione o ícone apropriado aqui --> */}
+                                        
                                     </svg>
                                 </span>
                                 <span>Arquivos</span>
@@ -124,7 +117,7 @@ export const Navbar = () => {
 
                             <li>
                                 <button
-                                    onClick={ handleLogout}
+                                    onClick={handleLogout}
                                     className='flex justify-center w-full items-center space-x-3 text-red-600 p-2 mt-11 rounded-md font-medium hover:bg-green-500 focus:bg-green-500 focus:shadow-outline'>
                                     Sair
                                 </button>
