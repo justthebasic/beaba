@@ -18,7 +18,7 @@ export default function Modal(props: FooProps) {
 
 
     useEffect(() => {
-        // Recuperar a lista de templates do servidor
+        
         api.get('api/templates/', {
 
         }).then((response) => {
@@ -58,14 +58,15 @@ export default function Modal(props: FooProps) {
                                 </div>
                                 {/*body*/}
                                 <div className="relative p-6 flex-auto break-all">
+                                    <h1 className="text-2xl text-black">Nome colunas:</h1>
                                     <p className="my-4 text-blueGray-500 text-lg leading-relaxed  break-all	">
 
-                                    </p>
                                     {props.children}
-
+                                    </p>
 
 
                                 </div>
+
 
                                 <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
                                     <button

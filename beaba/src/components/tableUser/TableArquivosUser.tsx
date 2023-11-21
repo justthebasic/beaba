@@ -21,33 +21,20 @@ import { ArquivoType } from '../types';
 import { format } from 'date-fns';
 
 
-// type ArquivoType = {
-//     id: number;
-//     nome_arquivo: string;
-//     caminho_arquivo: string;
-//     data_envio: string;
-//     estado: boolean;
-//     usuario: {
-//       id: number;
-//       nome_usuario: string;
-//     };
-//     template: {
-//       id: number;
-//       nome_template: string;
-//     };
-//   };
 
+const itemsPerPage = 10;
 
 export const TableArquivosUser = () => {
     const [arquivos, setArquivos] = useState([]);
     const [selectedArquivo, setSelectedArquivo] = useState<string>('');
+    const [visibleItems, setVisibleItems] = useState(itemsPerPage);
+
     const user = useUserStore((state) => state.user);
 
 
 
 
     useEffect(() => {
-        // Recuperar a lista de arquivos do servidor
         api.get('api/arquivos', {
 
         }).then((response) => {
@@ -68,7 +55,6 @@ export const TableArquivosUser = () => {
             // const encodedPath = encodeURIComponent(pathWithoutUploads);
             // console.log(encodedPath)
 
-            // Faz a chamada à API para obter o caminho correto
             const response = await apiFastApi.get(`apis/downloadfile/${pathWithoutUploads}`, {
                 responseType: 'blob'
             });
@@ -94,10 +80,8 @@ export const TableArquivosUser = () => {
 
     const handleDelete = async (arquivoId: number) => {
         try {
-            // Chame a API para excluir o arquivo
             await apiFastApi.delete(`apis/deletefile/${arquivoId}`);
 
-            // Atualize a lista de arquivos após a exclusão
             const response = await api.get('api/arquivos');
             setArquivos(response.data);
         } catch (error) {
@@ -105,11 +89,17 @@ export const TableArquivosUser = () => {
         }
     };
 
+    const handleLoadMore = () => {
+        setVisibleItems((prevVisibleItems) => prevVisibleItems + itemsPerPage);
+    }
+    const isUsuario = arquivos.filter(arquivo => arquivo.usuario.id === user.payload.userId)
+    const visibleUsuario = isUsuario.slice(0, visibleItems);
+
+
     const isSelected = (arquivo: ArquivoType) =>
         selectedArquivo.includes(arquivo.nome_arquivo) || selectedArquivo.length === 0;
 
 
-    const isUsuario = arquivos.filter(arquivo => arquivo.usuario.id === user.payload.userId)
     return (
         <>
             <div className='flex-col h-auto mt-10'>
@@ -119,7 +109,7 @@ export const TableArquivosUser = () => {
                         placeholder="Select Arquivo"
                         className="max-w-xs mb-6"
                     >
-                        {arquivos.map((arquivo: ArquivoType) => (
+                        {isUsuario.map((arquivo: ArquivoType) => (
                             <MultiSelectItem key={arquivo.nome_arquivo} value={arquivo.nome_arquivo}>
                                 {arquivo.usuario.nome_usuario}
                             </MultiSelectItem>
@@ -142,15 +132,15 @@ export const TableArquivosUser = () => {
                         <TableBody>
                             {isUsuario.filter((arquivo) => isSelected(arquivo)).map((arquivo: ArquivoType) => (
                                 <TableRow key={arquivo.nome_arquivo}>
-                                    <TableCell>{arquivo.nome_arquivo}</TableCell>
+                                    <TableCell>{arquivo.nome_arquivo.split(" ").slice(0, 3).join(" ")}</TableCell>
                                     <TableCell>
-                                        <Text>{arquivo.usuario.nome_usuario}</Text>
+                                        <Text>{arquivo.usuario.nome_usuario.split(" ").slice(0, 2).join(" ")}</Text>
                                     </TableCell>
                                     <TableCell>
-                                        <Text>{format(new Date(arquivo.data_envio), 'dd/MM/yyyy HH:mm:ss')}</Text>
+                                        <Text>{format(new Date(arquivo.data_envio), 'dd/MM/yyyy')}</Text>
                                     </TableCell>
                                     <TableCell>
-                                        <Text>{arquivo.template.nome_template}</Text>
+                                        <Text>{arquivo.template.nome_template.split(" ").slice(0, 3).join(" ")}</Text>
                                     </TableCell>
 
 
@@ -182,6 +172,13 @@ export const TableArquivosUser = () => {
                             ))}
                         </TableBody>
                     </Table>
+                    <div className='flex justify-center'>
+                            {visibleItems < isUsuario.length && (
+                                <Button onClick={handleLoadMore} className="text-center py-2 px-4 mt-4 rounded-md text-black bg-gray-300 border-0 hover:bg-gray-400">
+                                    Carregar Mais
+                                </Button>
+                            )}
+                        </div>
                 </Card>
 
             </div>

@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import api from '../../services/api'
 
 import apiFastApi from '../../services/apiFastAPI';
-import { StatusOnlineIcon } from "@heroicons/react/outline";
 import {
     Badge,
     Button,
@@ -23,11 +22,20 @@ import { useUserStore } from '../../state/state';
 import ModalCadastroTemplate from '../modal/ModalCadastroTemplate';
 import { TemplateType } from '../types';
 
+const colors = {
+    "pendente": "gray",
+    "ativo": "emerald",
+    "inativo": "rose",
+};
+
+const itemsPerPage = 10;
 
 
 export const TemplateListUser = () => {
     const [templates, setTemplates] = useState([]);
     const [selectedTemplate, setSelectedTemplate] = useState<Array<string>>([]);
+    const [visibleItems, setVisibleItems] = useState(itemsPerPage);
+
     const user = useUserStore((state) => state.user);
 
 
@@ -65,19 +73,35 @@ export const TemplateListUser = () => {
         }
     }
 
+    const handleDelete = async (templateId: number) => {
+        try {
+            await api.delete(`api/templates/${templateId}/delete`);
+
+            const response = await api.get('api/templates');
+            setTemplates(response.data);
+        } catch (error) {
+            console.error('Erro ao excluir o template:', error);
+        }
+    };
 
 
-    // const activeTemplates = templates.filter(template => template.estado === 'ativo' );
+
+    const handleLoadMore = () => {
+        setVisibleItems((prevVisibleItems) => prevVisibleItems + itemsPerPage);
+    }
     const isUsuario = templates.filter(template => template.usuario.id === user.payload.userId && template.estado === 'ativo')
+    const visibleUsuario = isUsuario.slice(0, visibleItems);
+
     console.log(isUsuario)
     const total = isUsuario.length;
     console.log(total)
     // console.log(usuario)
     const isSelected = (template: TemplateType) => {
         const isSelectedTemplate = selectedTemplate.includes(template.nome_template) || selectedTemplate.length === 0;
-        // const isUsuario = selectedTemplate.includes(template.usuario.id) || selectedTemplate.length === 0;
         return isSelectedTemplate
     }
+
+
     return (
         <>
 
@@ -89,7 +113,7 @@ export const TemplateListUser = () => {
                             placeholder="Selecionar Template"
                             className="max-w-xs mb-6"
                         >
-                            {templates.map((template: TemplateType) => (
+                            {isUsuario.map((template: TemplateType) => (
                                 <MultiSelectItem key={template.nome_template} value={template.nome_template}>
                                     {template.nome_template}
                                 </MultiSelectItem>
@@ -102,22 +126,25 @@ export const TemplateListUser = () => {
                     </div>
 
 
-                    <Table className="h-full w-full">
+                    <Table className="h-full w-full ">
                         <TableHead>
                             <TableRow>
                                 <TableHeaderCell>Nome template</TableHeaderCell>
+                                <TableHeaderCell>Nome Usuário</TableHeaderCell>
                                 <TableHeaderCell>Formato</TableHeaderCell>
                                 <TableHeaderCell>Status</TableHeaderCell>
 
 
                                 <TableHeaderCell>Visualizar</TableHeaderCell>
                                 <TableHeaderCell>Baixar</TableHeaderCell>
+                                <TableHeaderCell>Excluir</TableHeaderCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {isUsuario.filter((template) => isSelected(template)).map((template: TemplateType) => (
+                            {visibleUsuario.filter((template) => isSelected(template)).map((template: TemplateType) => (
                                 <TableRow key={template.nome_template}>
                                     <TableCell>{template.nome_template}</TableCell>
+                                    <TableCell>{template.usuario.nome_usuario}</TableCell>
                                     <TableCell>
                                         <Text>{template.formato}</Text>
 
@@ -125,7 +152,10 @@ export const TemplateListUser = () => {
 
 
                                     <TableCell>
-                                        <Badge color="emerald" icon={StatusOnlineIcon}>
+                                        {/* <Badge color="emerald" icon={StatusOnlineIcon}>
+                                            {template.estado}
+                                        </Badge> */}
+                                        <Badge color={colors[template.estado]} size="xl">
                                             {template.estado}
                                         </Badge>
                                     </TableCell>
@@ -134,11 +164,17 @@ export const TemplateListUser = () => {
 
                                         <Modal>
                                             <h1>
-                                                {template.campos.map((campo) => (
-                                                    <div key={campo.id}>
+                                                {template.campos?.map((campo) => (
+                                                    <div key={campo.nome_campo}>
                                                         {campo.nome_campo}
                                                     </div>
                                                 ))}
+                                                {template.campos?.length > 0 && (
+                                                    <div className='mt-10 text-black text-2xl flex-auto'>
+                                                        Quantidade de Colunas: {template.campos.length}
+                                                    </div>
+                                                )}
+
                                             </h1>
                                         </Modal>
 
@@ -150,10 +186,28 @@ export const TemplateListUser = () => {
                                             </svg>
                                         </Button>
                                     </TableCell>
+                                    <TableCell>
+
+                                        <Button
+                                            className={"py-2 px-4  rounded-md text-red-500  "}
+                                            onClick={() => handleDelete(template.id)}>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                        </Button>
+                                    </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
+                        
                     </Table>
+                    <div className='flex justify-center'>
+                            {visibleItems < isUsuario.length && (
+                                <Button onClick={handleLoadMore} className="text-center py-2 px-4 mt-4 rounded-md text-black bg-gray-300 border-0 hover:bg-gray-400">
+                                    Carregar Mais
+                                </Button>
+                            )}
+                        </div>
                 </Card>
 
             </div>

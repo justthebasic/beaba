@@ -22,6 +22,7 @@ export default class TemplateController {
                     },
                     usuario:{
                         select:{
+                            nome_usuario: true,
                             id:true
                         }
                     }
@@ -30,8 +31,8 @@ export default class TemplateController {
 
             templates.forEach((template) => {
                 const nomeDoTemplate = template.nome_template;
-                const campos = template.campos; // Array de objetos
-                const numeroDeCampos = campos.length; // Conta o número de campos
+                const campos = template.campos; 
+                const numeroDeCampos = campos.length; 
 
                 console.log(`Nome do template: ${nomeDoTemplate}`);
                 console.log(`Nome do campos: ${campos}`);
@@ -50,7 +51,7 @@ export default class TemplateController {
         try{
             const templates = await prisma.template.findUnique({
                 where: { id: parseInt(templateId) },
-                include: { campos: true }, // Inclua campos e arquivos relacionados ao template
+                include: { campos: true }, 
             });
 
 
@@ -75,15 +76,13 @@ export default class TemplateController {
         try {
             // Obter a data e hora atual
             const data_criacao = new Date();
-            // Iniciar uma transação
             await prisma.$transaction(async (prisma) => {
-                // Criar o template com a data de criação definida
                 const newTemplate = await prisma.template.create({
                     data: {
                         nome_template,
                         formato,
                         data_criacao,
-                        usuario: { connect: { id: userId } }, // Substitua com o ID do usuário associado
+                        usuario: { connect: { id: userId } }, 
                         campos: {
                             create: campos.map((campoData) => ({
                                 nome_campo: campoData.nome_campo,
@@ -93,7 +92,6 @@ export default class TemplateController {
                     },
                 });
 
-                // Retornar o template criado
                 res.json(newTemplate);
             });
         } catch (error) {
@@ -109,7 +107,7 @@ export default class TemplateController {
         // Verificar se o template existe antes de tentar excluí-lo
         const existingTemplate = await prisma.template.findUnique({
             where: { id: parseInt(templateId) },
-            include: { campos: true, arquivo: true }, // Inclua campos e arquivos relacionados ao template
+            include: { campos: true, arquivo: true }, 
         });
 
         if (!existingTemplate) {
@@ -123,7 +121,7 @@ export default class TemplateController {
 
         
         
-        // Iniciar uma transação para garantir operações atômicas
+        
         await prisma.$transaction(async (prisma) => {
             // Excluir os campos relacionados ao template
             await prisma.campo.deleteMany({

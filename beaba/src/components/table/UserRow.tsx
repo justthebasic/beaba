@@ -66,18 +66,14 @@ export const UserRow = ({ user, onSave, onDelete }: UserRowProps) => {
   }, []);
 
   const handleToggleUser = (userId: number, currentState: string) => {
-    // Verifique o estado atual do template
     const isActive = currentState === 'ativo';
 
-    // Determine a ação com base no estado atual
     const action = isActive ? 'deactivate' : 'activate';
 
-    // Fazer a solicitação para ativar ou desativar o template
     api.patch(`/api/users/${userId}/${action}`).then((response) => {
-      // Atualizar o estado do template na interface
       const updateUsers = users.map((user) => {
         if (user.id === userId) {
-          return response.data; // Use a resposta do servidor para atualizar o template
+          return response.data;
         }
         return user;
       });

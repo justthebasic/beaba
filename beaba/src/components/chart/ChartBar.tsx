@@ -18,12 +18,12 @@ export const ChartBarUploads = () => {
   const [userUploads, setUserUploads] = useState([]);
 
   useEffect(() => {
-    // Recuperar a lista de arquivos do servidor
+    
     apiFastApi.get('apis/templates', {})
       .then((response) => {
         setUploads(response.data);
 
-        // Conte o número de uploads por usuário
+        
         const userUploadCounts = {};
         response.data.forEach((file: { usuario: { nome_usuario: string; }; }) => {
           const nomeUsuario = file.usuario.nome_usuario;
@@ -34,13 +34,12 @@ export const ChartBarUploads = () => {
           }
         });
 
-        // Converta o objeto em uma lista
+       
         const userUploadList = Object.entries(userUploadCounts).map(([name, uploads]) => ({
           name,
           "Número de templates": uploads,
         }));
 
-        // Ordene a lista com base no número de uploads em ordem decrescente
         userUploadList.sort((a, b) => b["Número de templates"] - a["Número de templates"]);
 
         setUserUploads(userUploadList);
@@ -75,12 +74,10 @@ export const ChartBarMaiorUploads = () => {
   const [userUploads, setUserUploads] = useState([]);
 
   useEffect(() => {
-    // Recuperar a lista de arquivos do servidor
     api.get('api/arquivos', {})
       .then((response) => {
         setUploads(response.data);
 
-        // Conte o número de uploads por usuário
         const userUploadCounts = {};
         response.data.forEach((file: { usuario: { nome_usuario: string; }; }) => {
           const nomeUsuario = file.usuario.nome_usuario;
@@ -91,13 +88,11 @@ export const ChartBarMaiorUploads = () => {
           }
         });
 
-        // Converta o objeto em uma lista
         const userUploadList = Object.entries(userUploadCounts).map(([name, uploads]) => ({
           name,
           "Número de uploads": uploads,
         }));
 
-        // Ordene a lista com base no número de uploads em ordem decrescente
         userUploadList.sort((a, b) => b["Número de uploads"] - a["Número de uploads"]);
 
         setUserUploads(userUploadList);
@@ -131,12 +126,10 @@ export const ChartBarRanking = () => {
   const [formatRanking, setFormatRanking] = useState([]);
 
   useEffect(() => {
-    // Recuperar a lista de templates do servidor
     apiFastApi.get('apis/templates', {})
       .then((response) => {
         setTemplates(response.data);
 
-        // Conte a quantidade de arquivos por formato
         const formatCounts = {};
         response.data.forEach((template) => {
           const formato = template.formato;
@@ -147,7 +140,6 @@ export const ChartBarRanking = () => {
           }
         });
 
-        // Converta o objeto em uma lista
         const formatList = Object.entries(formatCounts).map(([name, quantidade]) => ({
           name,
           "Quantidade de templates": quantidade,

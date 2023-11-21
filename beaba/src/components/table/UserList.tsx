@@ -2,8 +2,6 @@ import { useEffect, useState } from 'react';
 import api from '../../services/api'
 
 import "gridjs/dist/theme/mermaid.css";
-import { useUserStore } from '../../state/state';
-import { StatusOnlineIcon } from "@heroicons/react/outline";
 import {
   Badge,
   Button,
@@ -17,21 +15,28 @@ import {
   TableHeaderCell,
   TableRow,
   Text,
-  
+
 } from "@tremor/react";
 import { UsuarioType } from '../types';
 
+const colors = {
+  "pendente": "gray",
+  "ativo": "emerald",
+  "inativo": "rose",
+};
+const itemsPerPage = 5;
 
 
 export const UserList = () => {
   const [users, setUsersStatus] = useState([]);
   // const user = useUserStore((state) => state.user);
   const [selectedUsuario, setSelectedUsuario] = useState<string>('');
+  const [visibleItems, setVisibleItems] = useState(itemsPerPage);
+
   const [selectedEstado, setSelectedEstado] = useState<string>('');
 
 
   useEffect(() => {
-    // Recuperar a lista de users do servidor
     api.get('api/users', {
 
 
@@ -45,19 +50,15 @@ export const UserList = () => {
   }, []);
 
   const handleToggleUser = (userId: number, currentState: string) => {
-    // Verifique o estado atual do usuario
     const isActive = currentState === 'inativo' || currentState === 'pendente';
 
-    // Determine a ação com base no estado atual
     const action = isActive ? 'ativar' : 'desativar';
 
-    // Fazer a solicitação para ativar ou desativar o template
 
     api.patch(`/api/users/${userId}/${action}`).then((response) => {
-      // Atualizar o estado do template na interface
       const updateUsers = users.map((usuario: UsuarioType) => {
         if (usuario.id === userId) {
-          return response.data; // Use a resposta do servidor para atualizar o template
+          return response.data;
         }
         return usuario;
       });
@@ -65,21 +66,15 @@ export const UserList = () => {
     });
   };
   const handleToggleUserAdm = (userId: number, currentState: string) => {
-    // Verifique o estado atual do usuario
 
-    // Determine a ação com base no estado atual
     const isAdm = currentState === 'adm';
 
-    // Determine a ação com base no estado atual
     const action = isAdm ? 'cargoUser' : 'cargoAdm';
 
-    // Fazer a solicitação para ativar ou desativar o template
-
     api.patch(`/api/users/${userId}/${action}`).then((response) => {
-      // Atualizar o estado do template na interface
       const updateUsers = users.map((usuario: UsuarioType) => {
         if (usuario.id === userId) {
-          return response.data; // Use a resposta do servidor para atualizar o template
+          return response.data;
         }
         return usuario;
       });
@@ -89,10 +84,8 @@ export const UserList = () => {
 
   const handleDelete = async (userId: number) => {
     try {
-      // Chame a API para excluir o arquivo
       await api.delete(`api/users/${userId}/delete`);
 
-      // Atualize a lista de arquivos após a exclusão
       const response = await api.get('api/users');
       setUsersStatus(response.data);
     } catch (error) {
@@ -100,9 +93,14 @@ export const UserList = () => {
     }
   };
 
+  const handleLoadMore = () => {
+    setVisibleItems((prevVisibleItems) => prevVisibleItems + itemsPerPage);
+  }
+  const visibleUsuario = users.slice(0, visibleItems);
+
   const isSelected = (usuario: UsuarioType) => {
     const isSelectedUsuario = selectedUsuario.includes(usuario.nome_usuario) || selectedUsuario.length === 0;
-    const isSelectedEstado = selectedEstado.includes(usuario.estado) || selectedEstado.length === 0;
+    const isSelectedEstado = selectedEstado.toLowerCase() === usuario.estado.toLowerCase() || selectedEstado.length === 0
 
     return isSelectedUsuario && isSelectedEstado;
 
@@ -163,7 +161,7 @@ export const UserList = () => {
               </TableRow>
             </TableHead>
             <TableBody className=''>
-              {users.filter((usuario) => isSelected(usuario)).map((usuario: UsuarioType) => (
+              {visibleUsuario.filter((usuario) => isSelected(usuario)).map((usuario: UsuarioType) => (
                 <TableRow key={usuario.id}>
                   <TableCell>{usuario.nome_usuario}</TableCell>
                   <TableCell>
@@ -172,7 +170,7 @@ export const UserList = () => {
 
 
                   <TableCell>
-                    <Badge color="emerald" icon={StatusOnlineIcon}>
+                    <Badge color={colors[usuario.estado]} size="xl">
                       {usuario.estado}
                     </Badge>
                   </TableCell>
@@ -204,6 +202,13 @@ export const UserList = () => {
               ))}
             </TableBody>
           </Table>
+          <div className='flex justify-center mt-4'>
+            {visibleItems < users.length && (
+              <Button onClick={handleLoadMore} className="text-center py-2 px-4 mt-4 rounded-md text-black bg-gray-300 border-0 hover:bg-gray-400">
+                Carregar Mais
+              </Button>
+            )}
+          </div>
         </Card>
 
 

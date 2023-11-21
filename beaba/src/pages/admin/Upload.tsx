@@ -62,10 +62,15 @@ export const Upload = () => {
       if (response.status === 200) {
         toast.success("Cadastro realizado com sucesso");
       } else {
-        toast.error('Erro no cadastro. Verifique os dados e tente novamente.')
+        toast.error('Erro no cadastro. Verifique os dados e tente novamente.');
       }
     } catch (error) {
-      toast.error('Erro no cadastro!')
+      if (error.response && error.response.status === 400 && error.response.data.detail) {
+        const errors = error.response.data.detail;
+        errors.forEach((errorMsg: string) => toast.error(errorMsg));
+      } else {
+        toast.error('Erro no cadastro!');
+      }
     }
   };
 
@@ -119,34 +124,37 @@ export const Upload = () => {
                 className="border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-2/4 h-1/4 p-2.5 dark:bg-white dark:placeholder-gray-400 text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
               >
                 <option value="">Escolher pasta no servidor</option>
-                <option value="pasta1">Pasta 1</option>
-                <option value="pasta2">Pasta 2</option>
-                <option value="pasta2">Pasta 3</option>
-                {/* Adicione mais opções conforme necessário */}
+                <option value="pasta1">Pasta Geral</option>
+                <option value="mercantil">Mercantil</option>
+                <option value="industrial">Industrial</option>
+                <option value="marketing">Marketing</option>
+                <option value="logistica">Logística</option>
+                <option value="RH">Recursos Humanos</option>
               </select>
             </div>
 
             <div className="flex">
-              <div className="flex items-center justify-center w-full">
-                <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full h-42 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
-                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                    <svg className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
-                    </svg>
-                    <p className="mb-2 text-sm text-gray-500 dark:text-gray-400"><span className="font-semibold">Clique </span> ou arraste</p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">CSV, XLS, XLSX (MAX. 100MB)</p>
-                  </div>
+             
                   {/* <input id="dropzone-file" type="file" className="hidden" /> */}
+                  {/* <input class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" id="file_input" type="file"> */}
+
+                  {/* <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white" htmlFor="file_input">Upload file</label> */}
                   <input
-                    id='dropzone-file'
+                    id="file_input"
                     type="file"
                     name="file"
                     onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
-                    className='hidden'
+                    className=' w-full text-sm text-slate-500
+                    file:mr-4 file:py-2 file:px-10 file:rounded-md
+                    file:border-0 file:text-sm file:font-semibold
+                    file:bg-gray-100 file:text-gray-900
+                    hover:file:bg-gray-400'
                   />
-                </label>
-              </div>
+                  
+               
+
             </div>
+            
             <div className=" text-center justify-center flex">
               <div className="rounded mb-4 p-4 text-center mt-10 flex justify-center items-center bg-green-500 text-white font-bold text-lg hover:bg-green-600">
                 <button type="submit" disabled={isLoading}>Enviar Arquivo</button>

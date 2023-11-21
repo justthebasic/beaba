@@ -1,0 +1,31 @@
+ID do Pedido, Produto, Quantidade, Endereço de Entrega,	Data de Entrega Prevista,	Status do Pedido,Produto,Quantidade,Endereço de Entrega,Data de Entrega Prevista,Status do Pedido
+77bdfab2-b12e-4364-9f35-691ffffc5e79,return,41,"161 Harrison Haven
+Williamhaven, DC 00698",2023-12-03,Em Processamento,figure,10,"65361 Joseph Canyon
+Kiaraberg, MD 18457",2023-12-01,Enviado
+6676ea65-f49e-4758-bb2d-b8a57c82e607,return,41,"161 Harrison Haven
+Williamhaven, DC 00698",2023-12-03,Em Processamento,reality,45,"Unit 0386 Box 3318
+DPO AE 41156",2023-11-27,Em Processamento
+45d31f7c-248f-4c31-9e9b-db8b93925426,return,41,"161 Harrison Haven
+Williamhaven, DC 00698",2023-12-03,Em Processamento,interesting,2,"5589 Oconnell Points Apt. 100
+North Linda, NC 34740",2023-11-23,Enviado
+77bdfab2-b12e-4364-9f35-691ffffc5e79,return,41,"161 Harrison Haven
+Williamhaven, DC 00698",2023-12-03,Em Processamento,figure,10,"65361 Joseph Canyon
+Kiaraberg, MD 18457",2023-12-01,Enviado
+1d612cd7-a006-40d4-848b-56927a24ba1b,return,41,"161 Harrison Haven
+Williamhaven, DC 00698",2023-12-03,Em Processamento,activity,71,"068 Regina Station Suite 190
+New Kevintown, WA 23501",2023-12-09,Enviado
+1d612cd7-a006-40d4-848b-56927a24ba1b,return,41,"161 Harrison Haven
+Williamhaven, DC 00698",2023-12-03,Em Processamento,activity,71,"068 Regina Station Suite 190
+New Kevintown, WA 23501",2023-12-09,Enviado
+1d612cd7-a006-40d4-848b-56927a24ba1b,return,41,"161 Harrison Haven
+Williamhaven, DC 00698",2023-12-03,Em Processamento,activity,71,"068 Regina Station Suite 190
+New Kevintown, WA 23501",2023-12-09,Enviado
+c8b9e62b-4509-4210-96d3-b8bc159a5907,resource,76,"25824 Schultz Landing
+Port Grace, OH 47539",2023-12-13,Entregue,live,51,"67975 Lloyd Glen Apt. 372
+Lake Heather, NH 96737",2023-11-23,Entregue
+92d1d5c7-46b7-4d6d-908b-b3ba9be1b7e3,resource,76,"25824 Schultz Landing
+Port Grace, OH 47539",2023-12-13,Entregue,result,57,"74656 Fisher Street Apt. 482
+Jamesfort, VI 98624",2023-11-24,Em Processamento
+26949857-cc30-4b7f-9a16-0bfaf699d455,return,41,"161 Harrison Haven
+Williamhaven, DC 00698",2023-12-03,Em Processamento,various,98,"851 Kimberly Estates
+South William, MP 46106",2023-11-23,Entregue

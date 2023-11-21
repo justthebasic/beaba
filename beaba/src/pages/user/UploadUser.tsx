@@ -61,13 +61,20 @@ export const UploadUser = () => {
       if (response.status === 200) {
         toast.success("Cadastro realizado com sucesso");
       } else {
-        toast.error('Erro no cadastro. Verifique os dados e tente novamente.')
+        toast.error('Erro no cadastro. Verifique os dados e tente novamente.');
       }
     } catch (error) {
-      toast.error('Erro no cadastro!')
+      if (error.response && error.response.status === 400 && error.response.data.detail) {
+        const errors = error.response.data.detail;
+        errors.forEach((errorMsg: string) => toast.error(errorMsg));
+      } else {
+        toast.error('Erro no cadastro!');
+      }
     }
   };
 
+  
+  const isUsuario = templates.filter(template => template.usuario.id === user.payload.userId)
   return (
     <>
       <form onSubmit={handleCreateArquivo}>
@@ -88,7 +95,7 @@ export const UploadUser = () => {
                 className="border text-sm rounded-lg bg-white focus:ring-blue-500 focus:border-blue-500 block w-2/4 h-1/4 p-2.5 dark:placeholder-gray-400 text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
               >
                 <option value="">Escolher templates disponíveis</option>
-                {templates.map((template) => (
+                {isUsuario.map((template) => (
                   <option key={template.id} value={template.id}>
                     {template.nome_template}
                   </option>
@@ -118,10 +125,12 @@ export const UploadUser = () => {
                 className="border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-2/4 h-1/4 p-2.5 dark:bg-white dark:placeholder-gray-400 text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
               >
                 <option value="">Escolher pasta no servidor</option>
-                <option value="pasta1">Pasta 1</option>
-                <option value="pasta2">Pasta 2</option>
-                <option value="pasta2">Pasta 3</option>
-                {/* Adicione mais opções conforme necessário */}
+                <option value="pasta1">Pasta Geral</option>
+                <option value="mercantil">Mercantil</option>
+                <option value="industrial">Industrial</option>
+                <option value="marketing">Marketing</option>
+                <option value="logistica">Logística</option>
+                <option value="RH">Recursos Humanos</option>
               </select>
             </div>
 

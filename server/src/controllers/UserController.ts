@@ -141,13 +141,13 @@ export default class UserController {
                 return res.status(404).json({ error: 'Template não encontrado' });
             }
             if (existingUser.arquivo.length > 0) {
-                return res.status(400).json({ error: 'Não é possível excluir o template vinculado a arquivos' });
+                return res.status(400).json({ error: 'Não é possível excluir o usuario vinculado a arquivos' });
             }
             if (existingUser.template.length > 0) {
-                return res.status(400).json({ error: 'Não é possível excluir o template vinculado a arquivos' });
+                return res.status(400).json({ error: 'Não é possível excluir o usuario vinculado a arquivos' });
             }
             if (existingUser.estado !== 'pendente') {
-                return res.status(400).json({ error: 'Não é possível excluir o template com estado não pendente' });
+                return res.status(400).json({ error: 'Não é possível excluir o usuario com estado não pendente' });
             }
 
             

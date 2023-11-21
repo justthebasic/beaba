@@ -6,6 +6,8 @@ from pydantic import BaseModel
 from src.prisma import prisma
 from typing import List
 from pathlib import Path
+from dateutil import parser
+
 import logging
 
 
@@ -55,7 +57,7 @@ async def list_arquivos():
 
 def read_uploaded_file(file_path):
     if file_path.endswith('.csv'):
-        df = pd.read_csv(file_path, sep=',', header=1)
+        df = pd.read_csv(file_path, sep=',')
     elif file_path.endswith(('.xls', '.xlsx')):
         df = pd.read_excel(file_path)
     else:
@@ -66,34 +68,56 @@ type_mapping = {
     "str": "object",
     "int64": "int64",
     "float": "float64",
-    "datetime": "datetime64",
+    "datetime": "datetime64[ns]",
     "boolean": "bool",
     # Add more mappings as needed
 }
 
 async def validar_arquivo(file_path, template_id):
+    errors = []
+
     try:
         df = read_uploaded_file(file_path)
     except Exception as e:
-        os.remove(file_path)  
-        raise HTTPException(status_code=400, detail="Erro ao ler o arquivo. Verifique o formato.")
+        os.remove(file_path)
+        errors.append("Erro ao ler o arquivo. Verifique o formato.")
 
     template = await prisma.template.find_unique(
-        where={'id': template_id}, 
+        where={'id': template_id},
         include={'campos': True})
 
     campo_names = [campo.nome_campo for campo in template.campos]
     campo_tipos = [campo.tipo for campo in template.campos]
 
-    
+    if set(df.columns) != set(campo_names):
+        errors.append("O arquivo contém colunas a mais ou a menos do que o esperado.")
+
     for col in df.columns:
         col_name = col
         col_dtype = df[col_name].dtype
         expected_dtype = type_mapping[campo_tipos[campo_names.index(col_name)]]
+
         if col_dtype != expected_dtype:
-            os.remove(file_path)
-            raise ValueError(f"O tipo de dados da coluna '{col_name}' não corresponde ao tipo esperado.")
-            
+            errors.append(f"O tipo de dados da coluna '{col_name}' não corresponde ao tipo esperado.")
+
+        # Verificar os tipos de dados nas linhas
+        for index, value in df[col_name].items():
+            if pd.isna(value):
+                continue  # Pular valores nulos
+
+            if expected_dtype == "datetime64[ns]":
+                try:
+                    pd.to_datetime(value)
+                except ValueError:
+                    errors.append(f"O valor na coluna '{col_name}', linha {index + 2}, não é um datetime válido.")
+                       
+            elif expected_dtype == "bool":
+                if value not in [True, False]:
+                    errors.append(f"O valor na coluna '{col_name}', linha {index + 2}, não é um booleano válido.")
+
+    if errors:
+        os.remove(file_path)
+        raise HTTPException(status_code=400, detail=errors)
 
     return df
 
@@ -128,23 +152,18 @@ async def upload_file(
     folder: str = Form(...)
     ):
 
-    
     folder_path = os.path.join(UPLOADS_DIR, folder)
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
-
 
     base_file_path = os.path.join(folder_path ,file.filename)
     file_path = base_file_path
 
     count = 1
-
     while os.path.exists(file_path):
         base_name, file_extension = os.path.splitext(file_path)
         file_path = f"{base_name}_{count}{file_extension}"
         count += 1
-
-
 
     try:
         with open(file_path, "wb") as f:
@@ -154,11 +173,9 @@ async def upload_file(
 
         return {"filename": file.filename, "arquivo_id": arquivo.id}
     except HTTPException as e:
-        # Se a validação falhar, remova o arquivo e retorne a exceção
-        os.remove(file_path)
+        
         raise e
     except Exception as e:
-        # Em caso de qualquer outra exceção, remova o arquivo e retorne uma exceção 500
         os.remove(file_path)
         raise HTTPException(status_code=500, detail=f"Erro inesperado: {str(e)}")
 

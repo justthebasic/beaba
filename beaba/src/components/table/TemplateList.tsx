@@ -22,13 +22,22 @@ import ModalCadastroTemplate from '../modal/ModalCadastroTemplate';
 import { TemplateType } from '../types';
 import { useUserStore } from '../../state/state';
 
+const colors = {
+    "pendente": "gray",
+    "ativo": "emerald",
+    "inativo": "rose",
+};
+const itemsPerPage = 5;
 
 
 export const TemplateList = () => {
     const [templates, setTemplates] = useState([]);
     const [selectedTemplate, setSelectedTemplate] = useState<Array<string>>([]);
     const [selectedEstado, setSelectedEstado] = useState('');
+    const [visibleItems, setVisibleItems] = useState(itemsPerPage);
+
     const user = useUserStore((state) => state.user);
+
     const userId = user?.payload.userId
 
 
@@ -47,17 +56,13 @@ export const TemplateList = () => {
     }, []);
 
     const handleToggleTemplate = (templateId: number, currentState: string) => {
-        // Verifique o estado atual do template
         const isActive = currentState === 'ativo';
-        // Determine a ação com base no estado atual
         const action = isActive ? 'desativar' : 'ativar';
 
-        // Fazer a solicitação para ativar ou desativar o template
         api.patch(`/api/templates/${templateId}/${action}`).then((response) => {
-            // Atualizar o estado do template na interface
             const updatedTemplates = templates.map((template: TemplateType) => {
                 if (template.id === templateId) {
-                    return response.data; // Use a resposta do servidor para atualizar o template
+                    return { ...template, ...response.data } 
                 }
                 return template;
             });
@@ -69,10 +74,9 @@ export const TemplateList = () => {
     const handleDownloadTemplate = async (templateId: number, nome_template: string, formato: string) => {
         try {
             const response = await apiFastApi.get(`apis/download-${formato}/${templateId}/${nome_template}/${formato}`, {
-                responseType: 'blob', // Para receber o arquivo binário
+                responseType: 'blob', 
             });
 
-            // Crie um link para download e clique nele para iniciar o download
             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement('a');
             link.href = url;
@@ -87,10 +91,8 @@ export const TemplateList = () => {
 
     const handleDelete = async (templateId: number) => {
         try {
-            // Chame a API para excluir o arquivo
             await api.delete(`api/templates/${templateId}/delete`);
 
-            // Atualize a lista de arquivos após a exclusão
             const response = await api.get('api/templates');
             setTemplates(response.data);
         } catch (error) {
@@ -99,16 +101,20 @@ export const TemplateList = () => {
     };
 
 
+    const handleLoadMore = () => {
+        setVisibleItems((prevVisibleItems) => prevVisibleItems + itemsPerPage);
+    }
+    const visibleUsuario = templates.slice(0, visibleItems);
+
+
     const isSelected = (template: TemplateType) => {
         const isSelectedTemplate = selectedTemplate.includes(template.nome_template) || selectedTemplate.length === 0;
-        const isSelectedEstado = selectedEstado.includes(template.estado) || selectedEstado.length === 0;
+        const isSelectedEstado = selectedEstado.toLowerCase() === template.estado.toLowerCase() || selectedEstado.length === 0
 
         return isSelectedTemplate && isSelectedEstado;
     }
 
-    const isUsuario = templates.map(template => template.campos)
-    const total = isUsuario.length;
-    
+
 
 
     return (
@@ -149,7 +155,8 @@ export const TemplateList = () => {
                         <TableHead>
                             <TableRow>
                                 <TableHeaderCell>Nome template</TableHeaderCell>
-                                
+                                <TableHeaderCell>Usuário</TableHeaderCell>
+
                                 <TableHeaderCell>Formato</TableHeaderCell>
                                 <TableHeaderCell>Status</TableHeaderCell>
                                 <TableHeaderCell>Aprovação</TableHeaderCell>
@@ -160,17 +167,21 @@ export const TemplateList = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {templates.filter((template) => isSelected(template)).map((template: TemplateType) => (
+                            {visibleUsuario.filter((template) => isSelected(template)).map((template: TemplateType) => (
                                 <TableRow key={template.id}>
                                     <TableCell>{template.nome_template}</TableCell>
-                                    
+                                    <TableCell>{template.usuario ? template.usuario.nome_usuario : 'N/A'}</TableCell>
+
                                     <TableCell>
                                         <Text>{template.formato}</Text>
                                     </TableCell>
 
 
                                     <TableCell>
-                                        <Badge color="emerald" icon={StatusOnlineIcon}>
+                                        {/* <Badge color="emerald" icon={StatusOnlineIcon}>
+                                            {template.estado}
+                                        </Badge> */}
+                                        <Badge color={colors[template.estado]} size="xl">
                                             {template.estado}
                                         </Badge>
                                     </TableCell>
@@ -183,11 +194,17 @@ export const TemplateList = () => {
 
                                         <Modal>
                                             <h1>
-                                                {template.campos.map((campo) => (
-                                                    <div key={campo.id}>
+                                                {template.campos?.map((campo) => (
+                                                    <div key={campo.nome_campo}>
                                                         {campo.nome_campo}
                                                     </div>
                                                 ))}
+                                                {template.campos?.length >= 0 && (
+                                                    <div className='mt-10 text-black text-2xl flex-auto'>
+                                                        Quantidade de Colunas: {template.campos.length}
+                                                    </div>
+                                                )}
+
                                             </h1>
                                         </Modal>
 
@@ -213,6 +230,13 @@ export const TemplateList = () => {
                             ))}
                         </TableBody>
                     </Table>
+                        <div className='flex justify-center mt-4'>
+                            {visibleItems < templates.length && (
+                                <Button onClick={handleLoadMore} className="text-center py-2 px-4 mt-4 rounded-md text-black bg-gray-300 border-0 hover:bg-gray-400">
+                                    Carregar Mais
+                                </Button>
+                            )}
+                        </div>
                 </Card>
 
             </div>

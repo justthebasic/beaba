@@ -25,6 +25,7 @@ import { ArquivoType } from '../types';
 
 
 
+const itemsPerPage = 5;
 
 
 
@@ -32,12 +33,14 @@ import { ArquivoType } from '../types';
 export const TableArquivos = () => {
     const [arquivos, setArquivos] = useState([]);
     const [selectedArquivo, setSelectedArquivo] = useState<Array<string>>([]);
+    const [visibleItems, setVisibleItems] = useState(itemsPerPage);
+
 
 
 
 
     useEffect(() => {
-        // Recuperar a lista de arquivos do servidor
+        
         api.get('api/arquivos', {
 
         }).then((response) => {
@@ -82,10 +85,10 @@ export const TableArquivos = () => {
 
     const handleDelete = async (arquivoId: number) => {
         try {
-            // Chame a API para excluir o arquivo
+           
             await apiFastApi.delete(`apis/deletefile/${arquivoId}`);
 
-            // Atualize a lista de arquivos após a exclusão
+            
             const response = await api.get('api/arquivos');
             setArquivos(response.data);
         } catch (error) {
@@ -93,6 +96,11 @@ export const TableArquivos = () => {
         }
     };
 
+
+    const handleLoadMore = () => {
+        setVisibleItems((prevVisibleItems) => prevVisibleItems + itemsPerPage);
+    }
+    const visibleUsuario = arquivos.slice(0, visibleItems);
 
     const isSelected = (arquivo: ArquivoType) =>
         selectedArquivo.includes(arquivo.nome_arquivo) || selectedArquivo.length === 0;
@@ -129,17 +137,17 @@ export const TableArquivos = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {arquivos.filter((arquivo) => isSelected(arquivo)).map((arquivo: ArquivoType) => (
+                            {visibleUsuario.filter((arquivo) => isSelected(arquivo)).map((arquivo: ArquivoType) => (
                                 <TableRow key={arquivo.id}>
                                     <TableCell>{arquivo.nome_arquivo}</TableCell>
                                     <TableCell>
-                                        <Text>{arquivo.usuario.nome_usuario}</Text>
+                                        <Text>{arquivo.usuario.nome_usuario.split(" ").slice(0, 3).join(" ")}</Text>
                                     </TableCell>
                                     <TableCell>
                                         <Text>{format(new Date(arquivo.data_envio), 'dd/MM/yyyy')}</Text>
                                     </TableCell>
                                     <TableCell>
-                                        <Text>{arquivo.template.nome_template}</Text>
+                                        <Text>{arquivo.template.nome_template.split(" ").slice(0, 3).join(" ")}</Text>
                                     </TableCell>
 
 
@@ -170,17 +178,15 @@ export const TableArquivos = () => {
                                 </TableRow>
                             ))}
                         </TableBody>
-                        {/* <Select
-                    className="w-2/8"
-                    onValueChange={(value) => setPageSize(Number(value))}
-                >
-                    {[2, 20, 30, 40, 50].map((pageSize) => (
-                        <SelectItem key={pageSize} value={`${pageSize}`}>
-                            {pageSize}
-                        </SelectItem>
-                    ))}
-                </Select> */}
+                        
                     </Table>
+                    <div className='flex justify-center mt-4'>
+                            {visibleItems < arquivos.length && (
+                                <Button onClick={handleLoadMore} className="text-center py-2 px-4 mt-4 rounded-md text-black bg-gray-300 border-0 hover:bg-gray-400">
+                                    Carregar Mais
+                                </Button>
+                            )}
+                        </div>
                 </Card>
 
             </div>

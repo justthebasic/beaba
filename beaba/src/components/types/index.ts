@@ -20,6 +20,7 @@ export type ArquivoType = {
 };
 
 export type TemplateType = {
+    
 
     id: number;
     nome_template: string;
@@ -29,13 +30,9 @@ export type TemplateType = {
     usuario_id: number;
     usuario: {
         id: number;
-        nome_usuario: string;
+        nome_usuario?: string | undefined;
     };
-    campos: {
-        id: number;
-        nome_campo: string;
-        tipo_campo: string;
-    }
+   
 };
 
 export type UsuarioType = {

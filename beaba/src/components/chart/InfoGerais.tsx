@@ -55,17 +55,17 @@ export const UploadsTotal = () => {
 
 export const TemplatesTotal = () => {
   const [templates, setTemplates] = useState([]);
-  const [totalTemplates, setTotalTemplates] = useState(0); // Estado para a contagem total de uploads
+  const [totalTemplates, setTotalTemplates] = useState(0); 
 
   useEffect(() => {
-    // Recuperar a lista de templates do servidor
+    
     apiFastApi.get('apis/templates', {})
       .then((response) => {
         setTemplates(response.data);
 
-        // Conte a quantidade de templates por formato
+        
         const formatCounts = {};
-        let total = 0; // Variável para acompanhar a contagem total de uploads
+        let total = 0; 
 
         response.data.forEach((template) => {
           const id = template.id;
@@ -77,10 +77,10 @@ export const TemplatesTotal = () => {
           total++; // Incrementar a contagem total de uploads
         });
 
-        // Atualize o estado da contagem total de uploads
+        
         setTotalTemplates(total);
 
-        // Converta o objeto em uma lista
+      
       
       })
       .catch((error) => {
@@ -105,17 +105,17 @@ export const TemplatesTotal = () => {
 
 export const UsuariosTotal = () => {
   const [users, setUsers] = useState([]);
-  const [totalUsers, setTotalUsers] = useState(0); // Estado para a contagem total de uploads
+  const [totalUsers, setTotalUsers] = useState(0); 
 
   useEffect(() => {
-    // Recuperar a lista de users do servidor
+
     apiFastApi.get('apis/users', {})
       .then((response) => {
         setUsers(response.data);
 
-        // Conte a quantidade de users por formato
+       
         const formatCounts = {};
-        let total = 0; // Variável para acompanhar a contagem total de uploads
+        let total = 0; 
 
         response.data.forEach((usuario) => {
           const id = usuario.id;
@@ -124,13 +124,13 @@ export const UsuariosTotal = () => {
           } else {
             formatCounts[id] = 1;
           }
-          total++; // Incrementar a contagem total de uploads
+          total++; 
         });
 
-        // Atualize o estado da contagem total de uploads
+        
         setTotalUsers(total);
 
-        // Converta o objeto em uma lista
+        
       
       })
       .catch((error) => {

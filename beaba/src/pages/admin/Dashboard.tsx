@@ -106,7 +106,7 @@ export const Dashboard = () => {
 
               {/* detail */}
               <TabPanel>
-                <Grid numItemsMd={3} numItemsLg={1} className="gap-6 mt-6">
+                <Grid numItemsMd={1} numItemsLg={1} className="gap-6 mt-6">
 
                   <div className="mt-6 ">
                     <Card >

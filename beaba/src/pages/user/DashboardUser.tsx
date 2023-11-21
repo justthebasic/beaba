@@ -69,7 +69,7 @@ export const DashboardUser = () => {
                   </Card>
 
                 </Grid>
-                <Grid numItemsMd={2} numItemsLg={1} className="gap-6 mt-6">
+                <Grid numItemsMd={1} numItemsLg={1} className="gap-6 mt-6">
                   <div className='justify-center m-auto center w-full'>
                     <TableArquivosUser />
                   </div>
